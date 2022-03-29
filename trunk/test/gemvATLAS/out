@@ -1,0 +1,419 @@
+make gemvT;
+../../src/pcg   -pyu=2 -pxu=8 -ppre="d" -palign=1 -pSSELEN=16 -pSSENO=16 -pPF=1 -ppermuteReg="(1,2,3,4)" -pthreeAddress=1 -ppermuteUnroll="(1,2)" -paddressTranslate=0 ./gemv-T.pt;
+Reading POET instructions from file ./gemv-T.pt
+Reading POET instructions from file opt.pi
+Reading POET instructions from file Loops.incl
+Reading POET instructions from file utils.incl
+Done reading POET instructions file utils.incl
+Reading POET instructions from file ExpStmt.incl
+Done reading POET instructions file ExpStmt.incl
+Done reading POET instructions file Loops.incl
+Reading POET instructions from file omp.incl
+Done reading POET instructions file omp.incl
+Done reading POET instructions file opt.pi
+Reading POET instructions from file opt.pt
+Reading POET instructions from file LoopBlocking.pt
+Done reading POET instructions file LoopBlocking.pt
+Reading POET instructions from file LoopParallel.pt
+Reading POET instructions from file analysis.pi
+Done reading POET instructions file analysis.pi
+Reading POET instructions from file analysis.pt
+Done reading POET instructions file analysis.pt
+Done reading POET instructions file LoopParallel.pt
+Reading POET instructions from file ReplExp.pt
+Done reading POET instructions file ReplExp.pt
+Reading POET instructions from file ArrayCopying.pt
+Done reading POET instructions file ArrayCopying.pt
+Reading POET instructions from file BlockingCleanup.pt
+Done reading POET instructions file BlockingCleanup.pt
+Reading POET instructions from file peephole_opt.pt
+Done reading POET instructions file peephole_opt.pt
+Reading POET instructions from file normalize.pt
+Done reading POET instructions file normalize.pt
+Done reading POET instructions file opt.pt
+Done reading POET instructions file ./gemv-T.pt
+Reading POET syntax from file Cfront.code
+Reading POET syntax from file PAPI_C.code
+Done reading POET syntax file PAPI_C.code
+Reading POET instructions from file pthread.code
+Done reading POET instructions file pthread.code
+Done reading POET syntax file Cfront.code
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))),VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(Uop#("*",Bop#("+","Y","i")),VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#("alignA",AddrAlign#(Bop#("+","A",Bop#("*","i","lda")),8))
+Warning[VectorizeStmts]: cannot vectorize expression:Assign#(
+  "alignA",
+  AddrAlign#(
+    Bop#(
+      "+",
+      "A",
+      Bop#(
+        "*",
+        "i",
+        "lda")),
+    8))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: input===>POETList:((stmt0={(ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),0) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),0))} (ExpStmt#Assign#("alignA",AddrAlign#(Bop#("+","A",Bop#("*","i","lda")),8)) (Nest#(Loop#("j",0,"alignA",1)#("<","","","","","","","","","","<"),((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))))))#("","","") (nest1={Nest#(loopJ={Loop#("j","alignA",BlockLoopEndBeforeCleanup#("N",Bop#("+",-1,"N")),2)#("<","","___TAG_2",1,"j","","___TAG_2",1,"j","","<")},((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0)))))))#("","","")} Nest#(Loop#("j","j","N",1)#("<","","___TAG_2","","","","___TAG_2","","","","<"),((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))))))#("","",""))))) UnrolledFromIvar#("i",2,((ExpStmt#Assign#(Uop#("*",Bop#("+","Y","i")),VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2)) ExpStmt#Assign#(Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))),VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: repl===>POETList:((Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))),Var2VecRegL#(Bop#("+","X","j"),1)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))),Var2VecRegL#(Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))),StmtList#ExpStmt#VecRegAdd#(0,2)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))),Var2VecRegL#(Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))),StmtList#ExpStmt#VecRegAdd#(0,3)) (Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1),Uop#("*",Bop#("+","X","j"))),Arr2VecRegU#(Bop#("+","X","j"),1)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))),Arr2VecReg#(Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0))),StmtList#ExpStmt#VecRegAdd#(0,2)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))),Arr2VecRegU#(Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0))),StmtList#ExpStmt#VecRegAdd#(0,3)) (Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))),Var2VecRegL#(Bop#("+","X","j"),1)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))),Var2VecRegL#(Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))),StmtList#ExpStmt#VecRegMul#(1,0))...)
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))),VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(Uop#("*",Bop#("+","Y","i")),VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#("alignA",AddrAlign#(Bop#("+","A",Bop#("*","i","lda")),8))
+Warning[VectorizeStmts]: cannot vectorize expression:Assign#(
+  "alignA",
+  AddrAlign#(
+    Bop#(
+      "+",
+      "A",
+      Bop#(
+        "*",
+        "i",
+        "lda")),
+    8))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Uop#("*",Bop#("+","Y","i")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: input===>POETList:((UnrolledFromIvar#("i",2,((ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Uop#("*",Bop#("+","Y","i"))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))))))) (ExpStmt#Assign#("alignA",AddrAlign#(Bop#("+","A",Bop#("*","i","lda")),8)) (Nest#(Loop#("j",0,"alignA",1)#("<","","","","","","","","","","<"),((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))))))#("","","") (nest1={Nest#(loopJ={Loop#("j","alignA",BlockLoopEndBeforeCleanup#("N",Bop#("+",-1,"N")),2)#("<","","___TAG_4",1,"j","","___TAG_4",1,"j","","<")},((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0)))))))#("","","")} Nest#(Loop#("j","j","N",1)#("<","","___TAG_4","","","","___TAG_4","","","","<"),((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0)))))))#("","",""))))) UnrolledFromIvar#("i",2,((ExpStmt#Assign#(Uop#("*",Bop#("+","Y","i")),VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2)) ExpStmt#Assign#(Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))),VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: repl===>POETList:((Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Uop#("*",Bop#("+","Y","i"))),Var2VecRegL#(Bop#("+","Y","i"),2)) (Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Uop#("*",Bop#("+","Y",Bop#("+",1,"i")))),Var2VecRegL#(Bop#("+","Y",Bop#("+",1,"i")),3)) (Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))),Var2VecRegL#(Bop#("+","X","j"),1)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))),Var2VecRegL#(Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))),StmtList#ExpStmt#VecRegAdd#(0,2)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))),Var2VecRegL#(Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,0))),StmtList#ExpStmt#VecRegAdd#(0,3)) (Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1),Uop#("*",Bop#("+","X","j"))),Arr2VecRegU#(Bop#("+","X","j"),1)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))),Arr2VecReg#(Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,2),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0))),StmtList#ExpStmt#VecRegAdd#(0,2)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))),Arr2VecRegU#(Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))),0)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,1))),StmtList#ExpStmt#VecRegMul#(1,0)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,0))),StmtList#ExpStmt#VecRegAdd#(0,3)) (Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","X","j"))),Var2VecRegL#(Bop#("+","X","j"),1))...)
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))),VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(Uop#("*",Bop#("+","Y","i")),VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda"))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2)))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda")))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2),Uop#("*",Bop#("+","X","j")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#("alignA",AddrAlign#(Bop#("+","A",Bop#("*","i","lda")),8))
+Warning[VectorizeStmts]: cannot vectorize expression:Assign#(
+  "alignA",
+  AddrAlign#(
+    Bop#(
+      "+",
+      "A",
+      Bop#(
+        "*",
+        "i",
+        "lda")),
+    8))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Uop#("*",Bop#("+","Y","i")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: cur===>CodeVar:Assign#(VEC#("beta",0,"",4,0),Uop#("*",Uop#("&","beta")))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: input===>POETList:(ExpStmt#Assign#(VEC#("beta",0,"",4,0),Uop#("*",Uop#("&","beta"))) (UnrolledFromIvar#("i",2,((ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Uop#("*",Bop#("+","Y","i"))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))))))) stmt0={(ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("*",VEC#("beta",0,"",4,0),VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("*",VEC#("beta",0,"",4,0),VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4))))} (ExpStmt#Assign#("alignA",AddrAlign#(Bop#("+","A",Bop#("*","i","lda")),8)) (Nest#(Loop#("j",0,"alignA",1)#("<","","","","","","","","","","<"),((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1)))))))#("","","") (nest1={Nest#(loopJ={Loop#("j","alignA",BlockLoopEndBeforeCleanup#("N",Bop#("+",-1,"N")),2)#("<","","___TAG_6",1,"j","","___TAG_6",1,"j","","<")},((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1)))))))#("","","")} Nest#(Loop#("j","j","N",1)#("<","","___TAG_6","","","","___TAG_6","","","","<"),((ExpStmt#Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2),Uop#("*",Bop#("+","X","j"))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1))))) ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2))) ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1)))))))#("","",""))))) UnrolledFromIvar#("i",2,((ExpStmt#Assign#(Uop#("*",Bop#("+","Y","i")),VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3)) ExpStmt#Assign#(Uop#("*",Bop#("+","Y",Bop#("+",1,"i"))),VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4))))))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: repl===>POETList:((Assign#(VEC#("beta",0,"",4,0),Uop#("*",Uop#("&","beta"))),Var2VecReg#(Uop#("&","beta"),0)) (Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Uop#("*",Bop#("+","Y","i"))),Var2VecRegL#(Bop#("+","Y","i"),3)) (Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Uop#("*",Bop#("+","Y",Bop#("+",1,"i")))),Var2VecRegL#(Bop#("+","Y",Bop#("+",1,"i")),4)) (Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2),Uop#("*",Bop#("+","X","j"))),Var2VecRegL#(Bop#("+","X","j"),2)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))),Var2VecRegL#(Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))),1)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2))),StmtList#ExpStmt#VecRegMul#(2,1)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1))),StmtList#ExpStmt#VecRegAdd#(1,3)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))),Var2VecRegL#(Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))),1)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),0,"u",1,2))),StmtList#ExpStmt#VecRegMul#(2,1)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),0,"u",1,1))),StmtList#ExpStmt#VecRegAdd#(1,4)) (Assign#(VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2),Uop#("*",Bop#("+","X","j"))),Arr2VecRegU#(Bop#("+","X","j"),2)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"a",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))))),Arr2VecReg#(Bop#("+","A",Bop#("+","j",Bop#("*","i","lda"))),1)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2))),StmtList#ExpStmt#VecRegMul#(2,1)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 0)),0,"+",2,3),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1))),StmtList#ExpStmt#VecRegAdd#(1,3)) (Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Uop#("*",Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))))),Arr2VecRegU#(Bop#("+","A",Bop#("+","j",Bop#("+","lda",Bop#("*","i","lda")))),1)) (ExpStmt#Assign#(VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),Bop#("*",VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1),VEC#(Name#(("_" "x_buf" "_" 0)),1,"",1,2))),StmtList#ExpStmt#VecRegMul#(2,1)) (ExpStmt#Assign#(VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),Bop#("+",VEC#(Name#(("_" "y_buf" "_" 1)),0,"+",1,4),VEC#(Name#(("_" "a_buf" "_" 0 "_" 0)),1,"",1,1))),StmtList#ExpStmt#VecRegAdd#(1,4))...)
+diff dgemv_kernel.c ./dgemv_kernel-T.c.save
+27,28c27,28
+<         VEC#(_y_buf_0,0,+,2,2) = 0;
+<         VEC#(_y_buf_1,0,+,1,3) = 0;
+---
+>         vec_zero(reg2);
+>         vec_zero(reg3);
+248,249c248,249
+<         VEC#(_y_buf_0,0,+,2,3) = VEC#(beta,0,,4,0)*VEC#(_y_buf_0,0,+,2,3);
+<         VEC#(_y_buf_1,0,+,1,4) = VEC#(beta,0,,4,0)*VEC#(_y_buf_1,0,+,1,4);
+---
+>         vec_mul_rr(reg0,reg3);
+>         vec_mul_rr(reg0,reg4);
+make: *** [check] Error 1

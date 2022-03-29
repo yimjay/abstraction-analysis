@@ -1,0 +1,8 @@
+include Cfront.code
+include OptConfig.pi
+
+<define PARSE LIST(CODE.Pattern|CODE.UnknownUntilEOL, "\n")/>
+<define BACKTRACK FALSE />
+
+<code MM_pat pars=(content:Nest) type="" match=Pattern[type=type]#("MM_pat", content)  tri_array="" static_arrays="" loopmap="" pre_compute=""> 
+@content@ </code>

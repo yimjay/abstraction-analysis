@@ -1,0 +1,32 @@
+include Cfront.code
+
+<**************************************************************>
+<****** code templates generated for the output FSM language **>
+<**************************************************************>
+<code FSMDecl pars=(name,body,inherit)/>
+<code VarDecl pars=(type, var) />
+<code StateDecl pars=(name,constr,imply,extra) />
+
+<code Method pars=(name,param)>
+@name@(@param@)
+</code>
+
+<code TableEntry pars=(var, val) >
+@var@ => @val@
+</code>
+<code SymbolTable pars=(content) >
+START TABLE
+  @(res="";
+    foreach (content: (CLEAR var, CLEAR val) : TRUE) { res= BuildList(TableEntry#(var,val),res); }
+    StmtList#res)@
+END TABLE
+</code>
+
+<code Transition pars=(from, to)>
+{@from@} => {@to@}
+</code>
+
+<code BehaviorInfo pars=(fsm, tab)>
+fsm
+</code>
+<**************************************************************>
