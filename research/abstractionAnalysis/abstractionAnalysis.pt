@@ -1,0 +1,24 @@
+include ExpStmt.incl
+include analysis.pi
+
+<parameter inputFile default="" message="input file name"/>
+<parameter inputLang default="C++front.code" message="file name for input language syntax" />
+<parameter specFile default="" message="abstraction specification file"/>
+
+<parameter outputFile default=""  message="output file name"/>
+
+<input from=(inputFile) syntax=(inputLang) to=inputCode/>
+<input from=(specFile) syntax=("AbstractionSpecification.code") to=spec/>
+
+<eval 
+   res = XFORM.Analyze(inputCode, spec);
+   res
+/> 
+
+<output to=(outputFile) syntax="abstraction_output.code" from=res/>
+
+<xform Analyze pars=(input, spec)  pred="">
+return "RESULT";
+</xform>
+
+
