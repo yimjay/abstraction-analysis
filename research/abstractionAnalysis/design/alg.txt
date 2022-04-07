@@ -5,11 +5,14 @@ Output:
   s_c \subset s: the subset of semantic specifications in s that match c 
   f_c :  s_c -> c: a function that maps higher-level semantics of c to lower implementations 
 
-Each abstraction semantic specification is a tuple (N, V, S, C, T), where
+Each abstraction semantic specification is a tuple (N, V, C), where
   N: The name of the abstraction (e.g., stack, queue, dequeue, etc)
   V: a set of abstract variables used to represent the internal state of an abstraction 
-  S : A set of valid internal states of the abstraction, each state is specified by using a sequence of symbols in the form of (a1, a2, ... a_n), where a_i \in V \cup \{...\}. 
   C:  The set of constant values used in specification,e .g., true, false, etc.
+  M:  The set of public interface functions (methods), which can be used to access or modify internal data of the abstraction.
+
+Each abstraction has the following derived properties:
+  S : A set of valid internal states of the abstraction, each state is specified by using a sequence of symbols in the form of (a1, a2, ... a_n), where a_i \in V \cup \{...\}. 
   T: A set of transitions that modify the internal state of the abstraction. Each transition has three components: (T_n, T_src, T_res), where T_n is the name of the transition (e.g., push vs pop), T_src and T_res are the input and result of the transition and each in the form of s1 * s2 * ... s_n, where s_i \in S \cup V \cup C
 
 Example abstraction specifications:
@@ -30,7 +33,6 @@ Use case study:
   1 Try specify properties applicable to the data abstraction implementations in paperhttp://www.cs.uccs.edu/~qyi/papers/ASE2019.pdf
     Perform case study of matching these properties to the appropriate implementations in the sequential data abstractions..
   2. Try specify non-blocking synchronization semantics via the specification lanauge and try automatically recognizing the non-blocking synchronization semantics.
-
 
 Algorithm:
  MatchAbstraction (input, abs)
