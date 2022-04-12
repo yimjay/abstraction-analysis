@@ -1,0 +1,169 @@
+
+Match class SinglyLinkedListWrap to Stack:
+
+From abstraction specification:
+Stack: { top elem ... } with
+{
+  Pop: { top elem1 elem2 ...} -> elem1 * { top elem2 ...};
+  Push: { top elem1 ... } * elem -> { top elem elem1 ...};
+  Empty : { top } -> true;
+        { top elem ...} -> false;
+};
+===
+(N_a, V_a, C_a, D_a, M_a): 
+  N_a: Stack
+  V_a:  top 
+  D_a:  { top } and { top elem1 elem2 ... }
+  C_a: { true, false }
+  M_a: { Pop, Push, Empty }
+====
+MatchDataSemantics:
+ MatchDataSemantics(D_a, V_i, M_i):
+   P_v = position_variables_of(D_a)    -----------   P_v = { top } 
+   P_i = pointer_member_variables_of(V_i);  ------------- P_i = { head, end }
+   result = \emptyset;
+   for each possible matching f : P_v -> P_i do   ----- f : { top -> head }                                 f: { top -> end }
+     D_i = \em]tyset;
+     for each internal state  d_a \in D_a do       ---------_  d_a: {top} or {top elem1 elem2 ... }         
+        d_i = translate_to_implementation(d_a, f);  
+  
+        D_i = D_i U { d_i };              -----------D_i:  { { head } , { head elem1 elem2 ... }  }      { {end}, {end elem1 elem2 ... }}
+     endfor;
+     succ = true;
+     for each class method m_i \in M_i do      
+        D_j = symbolic_evaluation(m_i, D_i); 
+        if not (D_j \subseteq D_i)  then
+          succ = false; 
+          break;
+        endif
+      endfor
+      if (succ) then
+         result = result U { f, D_i };
+      endif
+   endfor
+   return result;
+
+
+MatchDataSemantics:
+
+class SinglyLinkedListWrap
+{
+    SinglyLinkedEntryWrap<T>* head, *end;
+    unsigned count;
+    void operator = (const SinglyLinkedListWrap<T> & that) {}
+  public:
+    SinglyLinkedListWrap() : head(0), end(0), count(0) {}
+
+    SinglyLinkedListWrap(const SinglyLinkedListWrap<T> & that)    ---> { head }, { head elem1,elem2,...}
+    {
+      head = 0;
+      end = 0;
+      count = 0;
+      *this += that;
+    }
+    ~SinglyLinkedListWrap() { DeleteAll(); }
+
+    void operator += (const SinglyLinkedListWrap<T> & that)
+    {
+      for (Iterator iter(that); !iter.ReachEnd(); iter++) {
+         T &c = iter.Current();
+         AppendLast(c);
+      }
+    }
+
+    void Reverse()
+     {  if (count == 0)
+              return;
+        SinglyLinkedEntryWrap<T>* tmp = head, *tmp1 = tmp->next;
+        while (tmp != end) {
+          SinglyLinkedEntryWrap<T>* tmp2 = tmp;
+          tmp = tmp1;
+          tmp1 = tmp->next;
+          tmp->next = tmp2;
+        }
+        head->next = 0;
+        end = head;
+        head = tmp;
+     }
+
+    SinglyLinkedEntryWrap<T>* AppendLast( const T& o )
+     {
+       count = count + 1;
+       SinglyLinkedEntryWrap<T> *e = new SinglyLinkedEntryWrap<T>( o );
+       if (end == 0) {
+          head = e;
+          end = e;
+       } else  {
+          end->next = e;
+          end = e;
+       }
+       return e;
+     }
+     SinglyLinkedEntryWrap<T>* PushFirst( const T& o )
+     {
+       count = count + 1;
+       SinglyLinkedEntryWrap<T> *e = new SinglyLinkedEntryWrap<T>( o );
+       if (head == 0)
+          head = e;
+          end = e;
+       else {
+          e->next = head;
+          head = e;
+       }
+       return e;
+     }
+     void PopFirst()
+     {
+        if (count > 0) {
+          count = count - 1;
+          SinglyLinkedEntryWrap<T>* e = head;
+          if (head == end) {
+            head = 0;
+            end = 0;
+          } else
+             head = head->next;
+          delete e;
+        }
+     }
+     bool Find (const T& o) {
+        bool res;
+        SinglyLinkedEntryWrap<T>* e;
+        e = head;
+        while ((e != 0) && (e->o!=o)) {
+           e = e->next;
+        }
+        res = (e != 0);
+     }
+    void DeleteAll()
+    {
+       while (head != 0)
+           PopFirst();
+    }
+
+    unsigned size() const { return count; }
+    SinglyLinkedEntryWrap<T>* First() const { return head; }
+    SinglyLinkedEntryWrap<T>* Last() const { return end; }
+    SinglyLinkedEntryWrap<T>* Next(SinglyLinkedEntryWrap<T>* cur) const
+          { return cur->next; }
+
+   class Iterator
+    {
+      const SinglyLinkedListWrap<T> *list;
+      SinglyLinkedEntryWrap<T> *cur;
+    public:
+      Iterator(const SinglyLinkedListWrap<T> &l) : list(&l) { cur = l.First(); }
+      Iterator(const Iterator& that) : list(that.list), cur(that.cur) {}
+      Iterator& operator = (const Iterator& that) { list = that.list; cur = that.cur; }
+      Iterator() : list(0), cur(0) {}
+      T& Current() const { return cur->GetEntry(); }
+      T& operator *() const { return Current(); }
+      bool ReachEnd() const { return cur == 0; }
+      void Reset() { if (list != 0) cur = list->First(); }
+      void Advance() { if (cur != 0) cur = list->Next(cur); }
+      void operator++() { Advance(); }
+      void operator ++(int) { Advance(); }
+    };
+   Iterator GetIterator() const { return Iterator(*this); }
+};
+
+#endif
