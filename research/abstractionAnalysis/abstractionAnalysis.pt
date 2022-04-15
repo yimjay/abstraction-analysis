@@ -1,37 +1,58 @@
 include ExpStmt.incl
 include analysis.pi
 
+<************************************************************
+Define input command line parameters
+*************************************************************>
 <parameter inputFile default="" message="input file name"/>
 <parameter inputLang default="C++front.code" message="file name for input language syntax" />
 <parameter specFile default="" message="abstraction specification file"/>
 
+<************************************************************
+Define output command line parameters
+*************************************************************>
 <parameter outputFile default=""  message="output file name"/>
 
+<************************************************************
+Parse inputFile and specFile
+*************************************************************>
 <input from=(inputFile) syntax=(inputLang) to=inputCode/>
 <input from=(specFile) syntax=("AbstractionSpecification.code") to=spec/>
 
-<code Abstraction pars=(name, data, methods) />
-<code ClassType pars=(name, body, parents)/>
-
+<************************************************************
+Main driver for abstraction analysis
+*************************************************************>
 <eval 
-   result = NULL;
-   foreach class : CODE.ClassType \in inputCode do
-   foreach abs : CODE.Abstraction \in spec do
+  result = NULL;
+  foreach class : CODE.ClassType \in inputCode do
+    foreach abs : CODE.Abstraction \in spec do
       result1  = XFORM.MatchAbstraction(inputCode, abs);
       if (result1 != NULL) {
          result = result1 :: result;
       }
-   enddo
-   enddo
-   result
-/> 
+    enddo
+  enddo
+  result
+/>
 
+<* note: For testing only *>
+<*<eval
+   print spec
+/>*>
+
+<************************************************************
+Unparse results
+attention: res should be result?
+*************************************************************>
 <output to=(outputFile) syntax="abstraction_output.code" from=res/>
 
+<************************************************************
+Forward declarations
+************************************************************>
 <xform MemberVariablesOfClass pars=(body)/>
 <xform PublicMethodsOfClass pars=(body)/>
 
-<*** f_v maps all variables in data_a  to its corresponding C++ member variables;
+<*** f_v maps all variables in data_a to its corresponding C++ member variables;
      f_d maps each possible abstraction state in data_a to its corresponding C++ data representation *>
 <code AbstractionDataImpl pars=(data_a, f_v, f_d)/>
 
@@ -40,39 +61,114 @@ include analysis.pi
 
 <*** f_v maps all variables in abs  to its corresponding C++ member variable implementation;
      f_d maps each possible abstraction state in abs to its corresponding C++ data representation
-     f_m maps ach state transition in methods_a to its corresponding C++ code implementation***>
+     f_m maps each state transition in methods_a to its corresponding C++ code implementation***>
 <code AbstractionImpl pars=(abs, f_v, f_d, f_m)/>
 
 <*** returns AbstractionDataImpl if semantics of data_a can be successfully mapped 
 to the variables and methods of the C++ class **>
 <xform MatchDataSemantics(data_a, vars_i, methods_i)/>
 
-<********************
-input = (name_i, vars_i, methods_i) : the name, member variables, and member methods of C++ class to analyze
-abs = (name_a, vars_a, data_a, methods_a) : the name, variables, data, and interface functions of abstraction specification to match against
-return: (f_v, f_d, f_m)  where  f_v maps var_a to vars_i, and f_m  maps methods_a to C++ code that invokes methods_i.
-***********************>
+<xform PositionVariablesOfAbstraction pars=(data_a)/>
+<xform PointerMemberVariablesOfClass pars=(vars_i)/>
+<xform TranslateToImplementation pars=(data_a, f_v)/>
+<xform SymbolicEvaluation pars=(methods_i, f_d)/> <*todo: add from analysis.pi*>
+<xform AbstractionTransition pars=(m_a)/>
+<xform AdaptApI/> <*todo: needs design*>
+
+
+<************************************************************
+Define MatchAbstraction
+*************************************************************
+note: arguments
+input = (name_i, vars_i, methods_i) 
+      : the name, member variables, 
+      and member methods of C++ class to analyze
+abs = (name_a, vars_a, data_a, methods_a) 
+      : the name, variables, data, 
+      and interface functions of abstraction specification 
+      to match against
+note: returns
+(f_v, f_d, f_m)  where  
+      f_v maps var_a to vars_i, 
+      f_m  maps methods_a to C++ code that invokes methods_i.
+*************************************************************>
 <xform  MatchAbstraction pars=(input, abs) >
   CODE.ClassType#(name_i, body_i) = input;
-  vars_i = XFORM.MemberVariablesOfClass(body_i); methods_i = XFORM.PublicMethodsOfClass(body_i);
+  vars_i = XFORM.MemberVariablesOfClass(body_i);
+  methods_i = XFORM.PublicMethodsOfClass(body_i);
   CODE.Abstraction#(name_a, vars_a, data_a, methods_a) = abs;
 
   result = NULL;
   foreach AbstractionDataImpl#(_, f_v =_, f_d = _) in MatchDataSemantics(data_a, vars_i, methods_i) do
-     f_m = NULL;
-     succ = TRUE;
-     foreach m_a  = CODE.MethodSpec \in methods_a do
-       c_m = MatchFunctionSemantics(m_a, methods_i, f_v, f_d);
-       if (c_m : NULL) {
-          succ = false; break;
-       } 
-       f_m =  XFORM.AdaptApI(m_a, c_m) :: f_m;
-     enddo
-     if succ then
-       result = CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
-     endif;
-   enddo;
-   return result;
+    f_m = NULL;
+    succ = TRUE;
+    foreach m_a  = CODE.MethodSpec \in methods_a do
+      c_m = MatchFunctionSemantics(m_a, methods_i, f_v, f_d);
+      if (c_m : NULL) {
+        succ = false; 
+        break;
+      } 
+      f_m =  XFORM.AdaptApI(m_a, c_m) :: f_m;
+    enddo
+    if succ then
+      result = CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
+    endif;
+  enddo;
+  return result;
+</xform>
+
+<************************************************************
+MatchDataSemantics
+*************************************************************
+note: arguments
+
+note: returns
+*************************************************************>
+<xform MatchDataSemantics pars=(data_a, vars_i, methods_i)>
+  p_v = XFORM.PositionVariablesOfAbstraction(data_a);
+  p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
+  result = NULL;
+
+  foreach f_v \in XFORM.PossibleMappings(p_v, p_i)  do
+    D_i = NULL;  <<* D_i is all internal state implementations.
+    foreach d_a = CODE.Record \in data_a do
+      d_i = XFORM.TranslateToImplementation(d_a, f_v);
+      D_i = d_i :: D_i;
+    enddo; 
+    succ = TRUE;
+    foreach m_i \in methods_i do
+      D_j = XFORM.symbolic_evaluation(m_i, f_d);
+      if (d_j ***NOT SUBSET*** D_i)
+        succ = FALSE;
+        break;
+    enddo;
+
+    if (succ):
+      result = CODE.AbstractionDataImpl#(f_v, f_d) :: result;
+  enddo;  
+  return result;
 </xform>
 
 
+<************************************************************
+MatchFunctionSemantics
+*************************************************************
+note: arguments
+m_a = 
+methods_i = 
+f_v = 
+f_d = 
+note: returns
+*************************************************************>
+<xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
+  result = NULL;
+
+  foreach m_i = Code.***ClassMethod \in methods_i do
+    d_j = XFORM.SymbolicEvaluation(m_i, f_d);
+    (d_a, d_b) = XFORM.AbstractionTransition(m_a);
+    if (XFORM.is_subset((XFORM.TranslateToImplementation(d_a, f_v), D_i)) &&
+       (XFORM.is_subset((XFORM.TranslateToImplementation(d_b, f_v), d_j))
+      result = CODE.*** :: (m_i, d_j);
+  enddo;
+  return result;
+</xform>
