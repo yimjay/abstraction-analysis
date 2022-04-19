@@ -70,9 +70,8 @@ to the variables and methods of the C++ class ***>
 <xform PositionVariablesOfAbstraction pars=(data_a)/>
 <xform PointerMemberVariablesOfClass pars=(vars_i)/>
 <xform TranslateToImplementation pars=(data_a, f_v)/>
-<xform SymbolicEvaluation pars=(methods_i, f_d)/> <*todo: add from analysis.pi*>
 <xform AbstractionTransition pars=(m_a)/>
-<xform AdaptApI/> <*todo: needs design*>
+<xform AdaptApI/> <*todo: needs design; using placeholder*>
 
 
 <************************************************************
@@ -107,7 +106,7 @@ note: returns
         succ = false; 
         break;
       } 
-      f_m =  XFORM.AdaptApI(m_a, c_m) :: f_m;
+      f_m :  XFORM.AdaptApI(m_a, c_m) :: f_m;
     enddo
     if (succ) then
       result : CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
@@ -169,4 +168,8 @@ note: returns
       result : result :: (m_i, d_j);
   enddo;
   return result;
+</xform>
+
+<xform AdaptApI pars=(a, b)>
+  
 </xform>
