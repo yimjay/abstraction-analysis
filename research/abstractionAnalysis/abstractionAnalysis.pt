@@ -24,8 +24,8 @@ Main driver for abstraction analysis
 *************************************************************>
 <eval 
   result = NULL;
-  foreach class : CODE.ClassType \in inputCode do
-    foreach abs : CODE.Abstraction \in spec do
+  foreach class = CODE.ClassType \in inputCode do
+    foreach abs = CODE.Abstraction \in spec do
       result1  = XFORM.MatchAbstraction(inputCode, abs);
       if (result1 != NULL) {
          result = result1 :: result;
@@ -65,9 +65,8 @@ Forward declarations
 <code AbstractionImpl pars=(abs, f_v, f_d, f_m)/>
 
 <*** returns AbstractionDataImpl if semantics of data_a can be successfully mapped 
-to the variables and methods of the C++ class **>
-<xform MatchDataSemantics(data_a, vars_i, methods_i)/>
-
+to the variables and methods of the C++ class ***>
+<xform MatchDataSemantics pars=(data_a, vars_i, methods_i)/>
 <xform PositionVariablesOfAbstraction pars=(data_a)/>
 <xform PointerMemberVariablesOfClass pars=(vars_i)/>
 <xform TranslateToImplementation pars=(data_a, f_v)/>
@@ -99,7 +98,7 @@ note: returns
   CODE.Abstraction#(name_a, vars_a, data_a, methods_a) = abs;
 
   result = NULL;
-  foreach AbstractionDataImpl#(_, f_v =_, f_d = _) in MatchDataSemantics(data_a, vars_i, methods_i) do
+  foreach AbstractionDataImpl#(_, f_v =_, f_d = _) \in MatchDataSemantics(data_a, vars_i, methods_i) do
     f_m = NULL;
     succ = TRUE;
     foreach m_a  = CODE.MethodSpec \in methods_a do
@@ -110,8 +109,8 @@ note: returns
       } 
       f_m =  XFORM.AdaptApI(m_a, c_m) :: f_m;
     enddo
-    if succ then
-      result = CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
+    if (succ) then
+      result : CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
     endif;
   enddo;
   return result;
@@ -138,13 +137,13 @@ note: returns
     succ = TRUE;
     foreach m_i \in methods_i do
       D_j = XFORM.symbolic_evaluation(m_i, f_d);
-      if (d_j ***NOT SUBSET*** D_i)
+      if (!XFORM.is_subset(d_j, D_i))
         succ = FALSE;
         break;
     enddo;
 
-    if (succ):
-      result = CODE.AbstractionDataImpl#(f_v, f_d) :: result;
+    if (succ) then
+      result : CODE.AbstractionDataImpl#(f_v, f_d) :: result;
   enddo;  
   return result;
 </xform>
@@ -163,12 +162,11 @@ note: returns
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
   result = NULL;
 
-  foreach m_i = Code.***ClassMethod \in methods_i do
+  foreach m_i = CODE.ClassTypeName \in methods_i do
     d_j = XFORM.SymbolicEvaluation(m_i, f_d);
     (d_a, d_b) = XFORM.AbstractionTransition(m_a);
-    if (XFORM.is_subset((XFORM.TranslateToImplementation(d_a, f_v), D_i)) &&
-       (XFORM.is_subset((XFORM.TranslateToImplementation(d_b, f_v), d_j))
-      result = CODE.*** :: (m_i, d_j);
+    if (XFORM.is_subset((XFORM.TranslateToImplementation(d_a, f_v), D_i)) && (XFORM.is_subset((XFORM.TranslateToImplementation(d_b, f_v), d_j))))
+      result : result :: (m_i, d_j);
   enddo;
   return result;
 </xform>

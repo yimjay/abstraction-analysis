@@ -1,5 +1,5 @@
 input=SinglyLinkedList.h_orig
-debug=
+debug=-dm
 
 now:
-	../../trunk/src/pcg $(debug) -L../../trunk/lib -pinputFile=testfiles/$(input) -pspecFile=semantics/abstractions.spec abstractionAnalysis.pt
+	pcg $(debug) -L../../trunk/lib -pinputFile=testfiles/$(input) -pspecFile=semantics/abstractions.spec abstractionAnalysis.pt
