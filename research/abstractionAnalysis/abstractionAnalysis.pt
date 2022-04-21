@@ -26,7 +26,10 @@ Main driver for abstraction analysis
   result = NULL;
   foreach class = CODE.ClassType \in inputCode do
     foreach abs = CODE.Abstraction \in spec do
-      result1  = XFORM.MatchAbstraction(inputCode, abs);
+      <*print("Arguments for MatchAbstraction are: ");
+      print("class: " class);
+      print("abs: " abs);*>
+      result1  = XFORM.MatchAbstraction(class, abs);
       if (result1 != NULL) {
          result = result1 :: result;
       }
@@ -35,16 +38,10 @@ Main driver for abstraction analysis
   result
 />
 
-<* note: For testing only *>
-<*<eval
-   print spec
-/>*>
-
 <************************************************************
 Unparse results
-attention: res should be result?
 *************************************************************>
-<output to=(outputFile) syntax="abstraction_output.code" from=res/>
+<*<output to=(outputFile) syntax="abstraction_output.code" from=result/>*>
 
 <************************************************************
 Forward declarations
@@ -67,6 +64,12 @@ Forward declarations
 <*** returns AbstractionDataImpl if semantics of data_a can be successfully mapped 
 to the variables and methods of the C++ class ***>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)/>
+
+<*** returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped 
+to the variables and methods of the C++ class ***>
+<xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)/>
+
+
 <xform PositionVariablesOfAbstraction pars=(data_a)/>
 <xform PointerMemberVariablesOfClass pars=(vars_i)/>
 <xform TranslateToImplementation pars=(data_a, f_v)/>
@@ -90,11 +93,16 @@ note: returns
       f_v maps var_a to vars_i, 
       f_m  maps methods_a to C++ code that invokes methods_i.
 *************************************************************>
-<xform  MatchAbstraction pars=(input, abs) >
-  CODE.ClassType#(name_i, body_i) = input;
-  vars_i = XFORM.MemberVariablesOfClass(body_i);
-  methods_i = XFORM.PublicMethodsOfClass(body_i);
-  CODE.Abstraction#(name_a, vars_a, data_a, methods_a) = abs;
+<xform MatchAbstraction pars=(input, abs)>
+  CODE.ClassType#(name_i, body_i, _) = input;
+
+  vars_i = XFORM.member_variables(body_i);
+  print("member variables are " vars_i);
+
+  methods_i = XFORM.member_functions(input);
+  <*print("member functions are " methods_i);*>
+
+  CODE.Abstraction#(name_a, data_a, methods_a) = abs;
 
   result = NULL;
   foreach AbstractionDataImpl#(_, f_v =_, f_d = _) \in MatchDataSemantics(data_a, vars_i, methods_i) do
@@ -106,7 +114,7 @@ note: returns
         succ = false; 
         break;
       } 
-      f_m :  XFORM.AdaptApI(m_a, c_m) :: f_m;
+      f_m : (XFORM.AdaptApI(m_a, c_m)) :: f_m;
     enddo
     if (succ) then
       result : CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
@@ -123,6 +131,7 @@ note: arguments
 note: returns
 *************************************************************>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)>
+  <**
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
   result = NULL;
@@ -145,6 +154,8 @@ note: returns
       result : CODE.AbstractionDataImpl#(f_v, f_d) :: result;
   enddo;  
   return result;
+  **>
+  print("**********Calling MatchDataSemantics")
 </xform>
 
 
@@ -159,6 +170,7 @@ f_d =
 note: returns
 *************************************************************>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
+  <**
   result = NULL;
 
   foreach m_i = CODE.ClassTypeName \in methods_i do
@@ -168,8 +180,34 @@ note: returns
       result : result :: (m_i, d_j);
   enddo;
   return result;
+  **>
+  print("**********Calling MatchFunctionSemantics")
+</xform>
+
+<xform PositionVariablesOfAbstraction pars=(data_a)>
+  print("**********Calling PositionVariables")
+</xform>
+
+<xform PointerMemberVariablesOfClass pars=(vars_i)>
+  print("**********Calling Pointers")
+</xform>
+
+<xform TranslateToImplementation pars=(data_a, f_v)>
+  print("**********Calling Translate")
+</xform>
+
+<xform AbstractionTransition pars=(m_a)>
+  print("**********Calling Abstraction")
 </xform>
 
 <xform AdaptApI pars=(a, b)>
-  
+  print("**********Calling Adapt")
+</xform>
+
+<xform MemberVariablesOfClass pars=(body)>
+  print("**********Calling MemberVariablesOfClass")
+</xform>
+
+<xform PublicMethodsOfClass pars=(body)>
+  print("**********Calling PublicMethodsOfClass")
 </xform>
