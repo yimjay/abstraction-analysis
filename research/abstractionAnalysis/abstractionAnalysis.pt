@@ -69,7 +69,7 @@ to the variables and methods of the C++ class ***>
 to the variables and methods of the C++ class ***>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)/>
 
-
+<xform PossibleMappings pars=(p_v, p_i)/>
 <xform PositionVariablesOfAbstraction pars=(data_a)/>
 <xform PointerMemberVariablesOfClass pars=(vars_i)/>
 <xform TranslateToImplementation pars=(data_a, f_v)/>
@@ -97,15 +97,16 @@ note: returns
   CODE.ClassType#(name_i, body_i, _) = input;
 
   vars_i = XFORM.member_variables(body_i);
-  print("member variables are " vars_i);
+  print("******************************member variables are " vars_i);
 
   methods_i = XFORM.member_functions(input);
-  <*print("member functions are " methods_i);*>
+  print("******************************member functions are " methods_i);
 
   CODE.Abstraction#(name_a, data_a, methods_a) = abs;
 
   result = NULL;
   foreach AbstractionDataImpl#(_, f_v =_, f_d = _) \in MatchDataSemantics(data_a, vars_i, methods_i) do
+  <**
     f_m = NULL;
     succ = TRUE;
     foreach m_a  = CODE.MethodSpec \in methods_a do
@@ -119,23 +120,31 @@ note: returns
     if (succ) then
       result : CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
     endif;
+  **>
+  print("****************************** call to MatchDataSemantics");
   enddo;
   return result;
+  
 </xform>
 
 <************************************************************
 MatchDataSemantics
 *************************************************************
-note: arguments
-
-note: returns
+note: data_a: vars from abstraction
+      vars_i: vars from implementation
+      methods_i: methods from implementation
+note: returns AbstractionDataImpl#(f_v, f_d)
 *************************************************************>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)>
-  <**
+  print("******************************Calling MatchDataSemantics");
+  print("data_a is " data_a);
+  print("vars_i is " vars_i);
+  print("methods_i is " methods_i);
+
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
   result = NULL;
-
+<**
   foreach f_v \in XFORM.PossibleMappings(p_v, p_i)  do
     D_i = NULL;  <<* D_i is all internal state implementations.
     foreach d_a = CODE.Record \in data_a do
@@ -150,12 +159,12 @@ note: returns
         break;
     enddo;
 
-    if (succ) then
+    if (succ)
       result : CODE.AbstractionDataImpl#(f_v, f_d) :: result;
   enddo;  
   return result;
-  **>
-  print("**********Calling MatchDataSemantics")
+**>
+  
 </xform>
 
 
@@ -181,33 +190,42 @@ note: returns
   enddo;
   return result;
   **>
-  print("**********Calling MatchFunctionSemantics")
+  print("******************************Calling MatchFunctionSemantics")
 </xform>
 
 <xform PositionVariablesOfAbstraction pars=(data_a)>
-  print("**********Calling PositionVariables")
+  print("******************************Calling PositionVariables");
+  <*note: what does this do?*>
 </xform>
 
 <xform PointerMemberVariablesOfClass pars=(vars_i)>
-  print("**********Calling Pointers")
+  print("******************************Calling PointerMemberVariablesOfClass");
+  <*lookup typeinfo == member variables, pointers and return as a set*>
+  DEBUG{CODE.PtrType#(_) = XFORM.Lookup(PtrType, vars_i)};
 </xform>
 
 <xform TranslateToImplementation pars=(data_a, f_v)>
-  print("**********Calling Translate")
+  print("******************************Calling Translate");
 </xform>
 
 <xform AbstractionTransition pars=(m_a)>
-  print("**********Calling Abstraction")
+  print("******************************Calling AbstractionTransition");
+  <*note: should return a set (startState, endState)*>
 </xform>
 
 <xform AdaptApI pars=(a, b)>
-  print("**********Calling Adapt")
+  print("******************************Calling Adapt");
 </xform>
 
 <xform MemberVariablesOfClass pars=(body)>
-  print("**********Calling MemberVariablesOfClass")
+  print("******************************Calling MemberVariablesOfClass");
 </xform>
 
 <xform PublicMethodsOfClass pars=(body)>
-  print("**********Calling PublicMethodsOfClass")
+  print("******************************Calling PublicMethodsOfClass");
+</xform>
+
+<xform PossibleMappings pars=(p_v, p_i)>
+  print("******************************Calling PossibleMappings");
+  <*return combinations of pv to pi*>
 </xform>
