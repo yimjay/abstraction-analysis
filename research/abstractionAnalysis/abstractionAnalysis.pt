@@ -142,7 +142,9 @@ note: returns AbstractionDataImpl#(f_v, f_d)
   print("methods_i is " methods_i);
 
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
+ print ("Position variables:" p_v);
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
+ print ("Pointer variables:" p_i);
   result = NULL;
 <**
   foreach f_v \in XFORM.PossibleMappings(p_v, p_i)  do
@@ -195,13 +197,26 @@ note: returns
 
 <xform PositionVariablesOfAbstraction pars=(data_a)>
   print("******************************Calling PositionVariables");
+  result=NULL;
+  foreach n = ID \in DEBUG{data_a} do 
+    if (!(n : "elem"|"...")) {
+      result = n :: result;
+    }
+  enddo
+ return result;
   <*note: what does this do?*>
 </xform>
 
 <xform PointerMemberVariablesOfClass pars=(vars_i)>
   print("******************************Calling PointerMemberVariablesOfClass");
   <*lookup typeinfo == member variables, pointers and return as a set*>
-  DEBUG{CODE.PtrType#(_) = XFORM.Lookup(PtrType, vars_i)};
+result=NULL;
+foreach decl = CODE.TypeInfo#(t=_,v=_, _) \in DEBUG{vars_i} do
+if (t : CODE.PtrType) {
+  result = decl :: result;
+}
+enddo
+return result;
 </xform>
 
 <xform TranslateToImplementation pars=(data_a, f_v)>
