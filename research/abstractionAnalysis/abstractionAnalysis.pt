@@ -142,12 +142,16 @@ note: returns AbstractionDataImpl#(f_v, f_d)
   print("methods_i is " methods_i);
 
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
- print ("Position variables:" p_v);
+  print ("Position variables:" p_v);
+  
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
- print ("Pointer variables:" p_i);
+  print ("Pointer variables:" p_i);
+  
   result = NULL;
-<**
-  foreach f_v \in XFORM.PossibleMappings(p_v, p_i)  do
+
+  foreach f_v \in XFORM.PossibleMappings(p_v, p_i) do
+    print("inside foreach");
+  <**
     D_i = NULL;  <<* D_i is all internal state implementations.
     foreach d_a = CODE.Record \in data_a do
       d_i = XFORM.TranslateToImplementation(d_a, f_v);
@@ -163,9 +167,10 @@ note: returns AbstractionDataImpl#(f_v, f_d)
 
     if (succ)
       result : CODE.AbstractionDataImpl#(f_v, f_d) :: result;
+  **>
   enddo;  
   return result;
-**>
+
   
 </xform>
 
@@ -204,19 +209,17 @@ note: returns
     }
   enddo
  return result;
-  <*note: what does this do?*>
 </xform>
 
 <xform PointerMemberVariablesOfClass pars=(vars_i)>
   print("******************************Calling PointerMemberVariablesOfClass");
-  <*lookup typeinfo == member variables, pointers and return as a set*>
-result=NULL;
-foreach decl = CODE.TypeInfo#(t=_,v=_, _) \in DEBUG{vars_i} do
-if (t : CODE.PtrType) {
-  result = decl :: result;
-}
-enddo
-return result;
+  result=NULL;
+  foreach decl = CODE.TypeInfo#(t=_,v=_, _) \in DEBUG{vars_i} do
+  if (t : CODE.PtrType) {
+    result = decl :: result;
+  }
+  enddo
+  return result;
 </xform>
 
 <xform TranslateToImplementation pars=(data_a, f_v)>
@@ -242,5 +245,11 @@ return result;
 
 <xform PossibleMappings pars=(p_v, p_i)>
   print("******************************Calling PossibleMappings");
-  <*return combinations of pv to pi*>
+  result = NULL;
+  foreach pv = ID \in p_v do
+    foreach i = CODE.TypeInfo#(t=_,v=_, _) \in p_i do
+      result = (pv, v) :: result;
+    enddo;
+  enddo;
+  return DEBUG{result};
 </xform>

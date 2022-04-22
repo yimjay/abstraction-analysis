@@ -4,3 +4,6 @@ debug=
 
 now:
 	~/POET/trunk/src/pcg $(debug) -L../../trunk/lib -pinputFile=testfiles/$(input) -poutputFile=$(output) -pspecFile=semantics/abstractions.spec abstractionAnalysis.pt
+
+test:
+	pcg $(debug) -L../../trunk/lib -pinputFile=testfiles/$(input) -poutputFile=$(output) -pspecFile=semantics/abstractions.spec abstractionAnalysis.pt
