@@ -46,8 +46,6 @@ Unparse results
 <************************************************************
 Forward declarations
 ************************************************************>
-<xform MemberVariablesOfClass pars=(body)/>
-<xform PublicMethodsOfClass pars=(body)/>
 
 <*** f_v maps all variables in data_a to its corresponding C++ member variables;
      f_d maps each possible abstraction state in data_a to its corresponding C++ data representation *>
@@ -72,10 +70,10 @@ to the variables and methods of the C++ class ***>
 <xform PossibleMappings pars=(p_v, p_i)/>
 <xform PositionVariablesOfAbstraction pars=(data_a)/>
 <xform PointerMemberVariablesOfClass pars=(vars_i)/>
-<xform TranslateToImplementation pars=(data_a, f_v)/>
+<xform TranslateToImplementation pars=(d_a, f_v)/>
 <xform AbstractionTransition pars=(m_a)/>
 <xform AdaptApI/> <*todo: needs design; using placeholder*>
-
+<xform SymbolicEvaluation pars=(m_i, f_d)/>
 
 <************************************************************
 Define MatchAbstraction
@@ -150,21 +148,28 @@ note: returns AbstractionDataImpl#(f_v, f_d)
   result = NULL;
 
   foreach f_v \in XFORM.PossibleMappings(p_v, p_i) do
-    print("inside foreach");
-  <**
-    D_i = NULL;  <<* D_i is all internal state implementations.
-    foreach d_a = CODE.Record \in data_a do
-      d_i = XFORM.TranslateToImplementation(d_a, f_v);
-      D_i = d_i :: D_i;
-    enddo; 
+    D_i = NULL;  <<* D_i is all internal state implementations
+    foreach d_a = ID \in data_a do
+      <**attention: currently manually checks d_a is not elem ...**>
+      if (!(d_a : "elem"|"...")) {
+        d_i = XFORM.TranslateToImplementation(d_a, f_v);
+        f_d = d_i :: f_d;
+      }
+    enddo;
+
+    <*todo: get f_d: map state to data representation*>
+    f_d = 
+
+
     succ = TRUE;
+    <**
     foreach m_i \in methods_i do
-      D_j = XFORM.symbolic_evaluation(m_i, f_d);
+      d_j = XFORM.SymbolicEvaluation(m_i, f_d);
       if (!XFORM.is_subset(d_j, D_i))
         succ = FALSE;
         break;
     enddo;
-
+  
     if (succ)
       result : CODE.AbstractionDataImpl#(f_v, f_d) :: result;
   **>
@@ -200,6 +205,9 @@ note: returns
   print("******************************Calling MatchFunctionSemantics")
 </xform>
 
+<************************************************************
+Helper Functions
+*************************************************************
 <xform PositionVariablesOfAbstraction pars=(data_a)>
   print("******************************Calling PositionVariables");
   result=NULL;
@@ -222,8 +230,11 @@ note: returns
   return result;
 </xform>
 
-<xform TranslateToImplementation pars=(data_a, f_v)>
-  print("******************************Calling Translate");
+<xform TranslateToImplementation pars=(d_a, f_v)>
+  print("******************************Calling TranslateToImplementation");
+  DEBUG{d_a};
+  DEBUG{f_v};
+  
 </xform>
 
 <xform AbstractionTransition pars=(m_a)>
@@ -235,14 +246,6 @@ note: returns
   print("******************************Calling Adapt");
 </xform>
 
-<xform MemberVariablesOfClass pars=(body)>
-  print("******************************Calling MemberVariablesOfClass");
-</xform>
-
-<xform PublicMethodsOfClass pars=(body)>
-  print("******************************Calling PublicMethodsOfClass");
-</xform>
-
 <xform PossibleMappings pars=(p_v, p_i)>
   print("******************************Calling PossibleMappings");
   result = NULL;
@@ -252,4 +255,28 @@ note: returns
     enddo;
   enddo;
   return DEBUG{result};
+</xform>
+
+<xform SymbolicEvaluation pars=(m_i, f_d)>
+  print("******************************Calling SymbolicEvaluation");
+  DEBUG{m_i};
+  DEBUG{f_d};
+  <**
+  switch (m_i) {
+  case ID|STRING|CODE.Name|CODE.ScopedName:
+        r  = collect_variable_defs(exp=>STRING, loc, input);
+        if (r == NULL) { exp }
+        else {
+          res = NULL;
+         for (p = r; p != NULL; p = cdr(p)) {
+           cur = car(p);
+           Assign#(_,rhs)|TypeInfo#(_,_,rhs) = cur;
+           res = AppendList(res, symbolic_evaluation(rhs, cur, input));
+         }
+          (cdr(res) == NULL)? car(res) : res
+        }
+  case (first second) : (symbolic_evaluation(first,loc,input)) :: (symbolic_evaluation(second,loc,input)::NULL)
+  case CODE.VarInit#e : symbolic_evaluation(e,loc,input)
+  }
+  **>
 </xform>
