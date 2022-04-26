@@ -59,6 +59,8 @@ Forward declarations
      f_m maps each state transition in methods_a to its corresponding C++ code implementation***>
 <code AbstractionImpl pars=(abs, f_v, f_d, f_m)/>
 
+<code ZeroOrMoreElements parse=("elem"|"...")/>
+
 <*** returns AbstractionDataImpl if semantics of data_a can be successfully mapped 
 to the variables and methods of the C++ class ***>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)/>
@@ -74,6 +76,8 @@ to the variables and methods of the C++ class ***>
 <xform AbstractionTransition pars=(m_a)/>
 <xform AdaptApI/> <*todo: needs design; using placeholder*>
 <xform SymbolicEvaluation pars=(m_i, f_d)/>
+
+
 
 <************************************************************
 Define MatchAbstraction
@@ -148,17 +152,18 @@ note: returns AbstractionDataImpl#(f_v, f_d)
   result = NULL;
 
   foreach f_v \in XFORM.PossibleMappings(p_v, p_i) do
+    DEBUG{f_v};
     D_i = NULL;  <<* D_i is all internal state implementations
     foreach d_a = ID \in data_a do
       <**attention: currently manually checks d_a is not elem ...**>
-      if (!(d_a : "elem"|"...")) {
+      <*if (!(d_a : "elem"|"...")) {*>
+      if (!(d_a : CODE.ZeroOrMoreElements)) {
         d_i = XFORM.TranslateToImplementation(d_a, f_v);
-        f_d = d_i :: f_d;
+        D_i = D_i :: d_i;
       }
     enddo;
 
     <*todo: get f_d: map state to data representation*>
-    f_d = 
 
 
     succ = TRUE;
@@ -202,20 +207,22 @@ note: returns
   enddo;
   return result;
   **>
-  print("******************************Calling MatchFunctionSemantics")
+  print("******************************Calling MatchFunctionSemantics");
 </xform>
 
 <************************************************************
 Helper Functions
-*************************************************************
+*************************************************************>
 <xform PositionVariablesOfAbstraction pars=(data_a)>
   print("******************************Calling PositionVariables");
   result=NULL;
   foreach n = ID \in DEBUG{data_a} do 
-    if (!(n : "elem"|"...")) {
+    <*if (!(n : "elem"|"...")) {*>
+    if (!(n : CODE.ZeroOrMoreElements)) {
+      print("n is " n);
       result = n :: result;
     }
-  enddo
+  enddo;
  return result;
 </xform>
 
@@ -223,10 +230,10 @@ Helper Functions
   print("******************************Calling PointerMemberVariablesOfClass");
   result=NULL;
   foreach decl = CODE.TypeInfo#(t=_,v=_, _) \in DEBUG{vars_i} do
-  if (t : CODE.PtrType) {
-    result = decl :: result;
-  }
-  enddo
+    if (t : CODE.PtrType) {
+      result = decl :: result;
+    }
+  enddo;
   return result;
 </xform>
 
@@ -234,12 +241,13 @@ Helper Functions
   print("******************************Calling TranslateToImplementation");
   DEBUG{d_a};
   DEBUG{f_v};
-  
+  <*replace abstracted d_a by implemented f_v*>
+  <*top elem -> head elem*>
 </xform>
 
 <xform AbstractionTransition pars=(m_a)>
   print("******************************Calling AbstractionTransition");
-  <*note: should return a set (startState, endState)*>
+  DEBUG{m_a};
 </xform>
 
 <xform AdaptApI pars=(a, b)>
@@ -254,29 +262,11 @@ Helper Functions
       result = (pv, v) :: result;
     enddo;
   enddo;
-  return DEBUG{result};
+  return result;
 </xform>
 
 <xform SymbolicEvaluation pars=(m_i, f_d)>
   print("******************************Calling SymbolicEvaluation");
   DEBUG{m_i};
   DEBUG{f_d};
-  <**
-  switch (m_i) {
-  case ID|STRING|CODE.Name|CODE.ScopedName:
-        r  = collect_variable_defs(exp=>STRING, loc, input);
-        if (r == NULL) { exp }
-        else {
-          res = NULL;
-         for (p = r; p != NULL; p = cdr(p)) {
-           cur = car(p);
-           Assign#(_,rhs)|TypeInfo#(_,_,rhs) = cur;
-           res = AppendList(res, symbolic_evaluation(rhs, cur, input));
-         }
-          (cdr(res) == NULL)? car(res) : res
-        }
-  case (first second) : (symbolic_evaluation(first,loc,input)) :: (symbolic_evaluation(second,loc,input)::NULL)
-  case CODE.VarInit#e : symbolic_evaluation(e,loc,input)
-  }
-  **>
 </xform>
