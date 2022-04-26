@@ -1,17 +1,17 @@
 
 Stack: { top elem ... } with
 {
-  Pop: { top elem1 elem2 ...} -> elem1 * { top elem2 ...};
-  Push: { top elem1 ... } * elem -> { top elem elem1 ...};
+  Pop: { top elem1 elem ...} -> elem1 * { top elem ...};
+  Push: { top elem ... } * elem1 -> { top elem1 elem ...};
   Empty : { top } -> true;
-        { top elem ...} -> false;
+        { top elem1 elem ...} -> false;
 };
 
 Queue: { front elem ... back } with
 {
-  Pop: {front elem ... back} -> elem * {front ... back};
-  Push: {front elem1 ... back} * elem2 -> {front elem1 ... elem2 back}; 
+  Pop: {front elem1 elem ... back} -> elem1 * {front elem ... back};
+  Push: {front elem ... back} * elem1 -> {front elem ... elem2 back}; 
   Empty : { front back} -> true;
-          { front elem ... back} -> false;
+          { front elem1 elem ... back} -> false;
 };
 
