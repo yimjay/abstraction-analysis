@@ -46,7 +46,6 @@ Unparse results
 <************************************************************
 Forward declarations
 ************************************************************>
-
 <*** f_v maps all variables in data_a to its corresponding C++ member variables;
      f_d maps each possible abstraction state in data_a to its corresponding C++ data representation *>
 <code AbstractionDataImpl pars=(data_a, f_v, f_d)/>
@@ -66,12 +65,28 @@ to the variables and methods of the C++ class ***>
 <*** returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped 
 to the variables and methods of the C++ class ***>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)/>
+
+<*** returns possible combinations of position variables of abstraction and pointer member variables of C++ class ***>
 <xform PossibleMappings pars=(p_v, p_i)/>
+
+<*** returns position variables of abstraction given set of valid internal states of abstraction ***>
 <xform PositionVariablesOfAbstraction pars=(data_a)/>
+
+<*** returns pointer member variables of C++ class ***>
 <xform PointerMemberVariablesOfClass pars=(vars_i)/>
+
+<*** Input = d_a : an abstraction state that includes list of abstraction variables (e.g., top)
+             f_v : mapping of abstraction variables to class variables 
+   returns implementation of abstraction state by replacing abstraction var by class variables ***>
 <xform TranslateToImplementation pars=(d_a, f_v)/>
+
+<***  ***>
 <xform AbstractionTransition pars=(m_a)/>
+
+<***  ***>
 <xform AdaptApI/> <*todo: needs design; using placeholder*>
+
+<***  ***>
 <xform SymbolicEvaluation pars=(m_i, f_d)/>
 
 <************************************************************
@@ -225,10 +240,6 @@ Helper Functions
   return result;
 </xform>
 
-<* Input = d_a : an abstraction state that includes list of abstraction variables (e.g., top)
-           f_v : mapping of abstraction variables to class variables 
-   Output = implementation of abstraction state by replacing abstraction var by class variables
-           *>
 <xform TranslateToImplementation pars=(d_a, f_v)>
   print("******************************Calling TranslateToImplementation");
   DEBUG{d_a};
