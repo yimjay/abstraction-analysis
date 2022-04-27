@@ -26,9 +26,9 @@ Main driver for abstraction analysis
   result = NULL;
   foreach class = CODE.ClassType \in inputCode do
     foreach abs = CODE.Abstraction \in spec do
-      <*print("Arguments for MatchAbstraction are: ");
+      print("Arguments for MatchAbstraction are: ");
       print("class: " class);
-      print("abs: " abs);*>
+      print("abs: " abs);
       result1  = XFORM.MatchAbstraction(class, abs);
       if (result1 != NULL) {
          result = result1 :: result;
@@ -59,8 +59,6 @@ Forward declarations
      f_m maps each state transition in methods_a to its corresponding C++ code implementation***>
 <code AbstractionImpl pars=(abs, f_v, f_d, f_m)/>
 
-<code ZeroOrMoreElements parse=("elem"|"...")/>
-
 <*** returns AbstractionDataImpl if semantics of data_a can be successfully mapped 
 to the variables and methods of the C++ class ***>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)/>
@@ -68,7 +66,6 @@ to the variables and methods of the C++ class ***>
 <*** returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped 
 to the variables and methods of the C++ class ***>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)/>
-
 <xform PossibleMappings pars=(p_v, p_i)/>
 <xform PositionVariablesOfAbstraction pars=(data_a)/>
 <xform PointerMemberVariablesOfClass pars=(vars_i)/>
@@ -76,8 +73,6 @@ to the variables and methods of the C++ class ***>
 <xform AbstractionTransition pars=(m_a)/>
 <xform AdaptApI/> <*todo: needs design; using placeholder*>
 <xform SymbolicEvaluation pars=(m_i, f_d)/>
-
-
 
 <************************************************************
 Define MatchAbstraction
@@ -93,7 +88,8 @@ abs = (name_a, vars_a, data_a, methods_a)
 note: returns
 (f_v, f_d, f_m)  where  
       f_v maps var_a to vars_i, 
-      f_m  maps methods_a to C++ code that invokes methods_i.
+      f_d maps internal states,
+      f_m  maps methods_a to C++ code that invokes methods_i
 *************************************************************>
 <xform MatchAbstraction pars=(input, abs)>
   CODE.ClassType#(name_i, body_i, _) = input;
@@ -108,10 +104,10 @@ note: returns
 
   result = NULL;
   foreach AbstractionDataImpl#(_, f_v =_, f_d = _) \in MatchDataSemantics(data_a, vars_i, methods_i) do
-  <**
     f_m = NULL;
     succ = TRUE;
-    foreach m_a  = CODE.MethodSpec \in methods_a do
+
+    foreach AbstractionMethod#(n=_,m_a=_) \in methods_a do
       c_m = MatchFunctionSemantics(m_a, methods_i, f_v, f_d);
       if (c_m : NULL) {
         succ = false; 
@@ -119,11 +115,11 @@ note: returns
       } 
       f_m : (XFORM.AdaptApI(m_a, c_m)) :: f_m;
     enddo
+    
     if (succ) then
       result : CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
     endif;
-  **>
-  print("****************************** call to MatchDataSemantics");
+    
   enddo;
   return result;
   
@@ -144,44 +140,34 @@ note: returns AbstractionDataImpl#(f_v, f_d)
   print("methods_i is " methods_i);
 
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
-  print ("Position variables:" p_v);
-  
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
-  print ("Pointer variables:" p_i);
   
   result = NULL;
 
   foreach f_v \in XFORM.PossibleMappings(p_v, p_i) do
     DEBUG{f_v};
-    D_i = NULL;  <<* D_i is all internal state implementations
+    f_d = NULL;  <<* D_i is all internal state implementations
     foreach d_a = ID \in data_a do
-      <**attention: currently manually checks d_a is not elem ...**>
-      <*if (!(d_a : "elem"|"...")) {*>
-      if (!(d_a : CODE.ZeroOrMoreElements)) {
+      if (!(d_a : CODE.ZeroOrMoreData)) {
         d_i = XFORM.TranslateToImplementation(d_a, f_v);
-        D_i = D_i :: d_i;
+        f_d = f_d :: d_i;
       }
     enddo;
 
-    <*todo: get f_d: map state to data representation*>
-
-
     succ = TRUE;
-    <**
+    
     foreach m_i \in methods_i do
       d_j = XFORM.SymbolicEvaluation(m_i, f_d);
-      if (!XFORM.is_subset(d_j, D_i))
+      if (!XFORM.is_subset(d_j, f_d))
         succ = FALSE;
         break;
     enddo;
   
     if (succ)
-      result : CODE.AbstractionDataImpl#(f_v, f_d) :: result;
-  **>
+      result : CODE.AbstractionDataImpl#(_,f_v,f_d) :: result;
+  
   enddo;  
   return result;
-
-  
 </xform>
 
 
@@ -196,7 +182,11 @@ f_d =
 note: returns
 *************************************************************>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
-  <**
+  DEBUG{m_a};
+  DEBUG{methods_i};
+  DEBUG{f_v};
+  DEBUG{f_d};
+
   result = NULL;
 
   foreach m_i = CODE.ClassTypeName \in methods_i do
@@ -206,7 +196,7 @@ note: returns
       result : result :: (m_i, d_j);
   enddo;
   return result;
-  **>
+
   print("******************************Calling MatchFunctionSemantics");
 </xform>
 
@@ -216,10 +206,8 @@ Helper Functions
 <xform PositionVariablesOfAbstraction pars=(data_a)>
   print("******************************Calling PositionVariables");
   result=NULL;
-  foreach n = ID \in DEBUG{data_a} do 
-    <*if (!(n : "elem"|"...")) {*>
-    if (!(n : CODE.ZeroOrMoreElements)) {
-      print("n is " n);
+  foreach n = ID \in DEBUG{data_a} do
+    if (!(n : CODE.ZeroOrMoreData)) {
       result = n :: result;
     }
   enddo;
@@ -237,21 +225,29 @@ Helper Functions
   return result;
 </xform>
 
+<* Input = d_a : an abstraction state that includes list of abstraction variables (e.g., top)
+           f_v : mapping of abstraction variables to class variables 
+   Output = implementation of abstraction state by replacing abstraction var by class variables
+           *>
 <xform TranslateToImplementation pars=(d_a, f_v)>
   print("******************************Calling TranslateToImplementation");
   DEBUG{d_a};
   DEBUG{f_v};
-  <*replace abstracted d_a by implemented f_v*>
-  <*top elem -> head elem*>
+  output = d_a;
+  foreach mapping=(v1=_, v2=_) \in f_v do
+    output = REPLACE(v1, v2, output);
+  enddo;
+  return DEBUG{output};
 </xform>
 
+<* Input = m_a :  *>
 <xform AbstractionTransition pars=(m_a)>
   print("******************************Calling AbstractionTransition");
   DEBUG{m_a};
 </xform>
 
 <xform AdaptApI pars=(a, b)>
-  print("******************************Calling Adapt");
+  print("******************************Calling AdaptAPI");
 </xform>
 
 <xform PossibleMappings pars=(p_v, p_i)>
