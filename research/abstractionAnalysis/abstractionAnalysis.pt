@@ -80,13 +80,13 @@ to the variables and methods of the C++ class ***>
    returns implementation of abstraction state by replacing abstraction var by class variables ***>
 <xform TranslateToImplementation pars=(d_a, f_v)/>
 
-<***  ***>
+<*** given an abstraction state transition, returns starting and ending states ***>
 <xform AbstractionTransition pars=(m_a)/>
 
-<***  ***>
-<xform AdaptApI/> <*todo: needs design; using placeholder*>
+<*** todo: needs design ***>
+<xform AdaptApI/>
 
-<***  ***>
+<*** todo: needs redesign ***>
 <xform SymbolicEvaluation pars=(m_i, f_d)/>
 
 <************************************************************
@@ -119,22 +119,23 @@ note: returns
 
   result = NULL;
   foreach AbstractionDataImpl#(_, f_v =_, f_d = _) \in MatchDataSemantics(data_a, vars_i, methods_i) do
+    print("f_v is " f_v);
+    print("f_d is " f_d);
     f_m = NULL;
     succ = TRUE;
 
-    foreach AbstractionMethod#(n=_,m_a=_) \in methods_a do
+    foreach m_a \in methods_a do
       c_m = MatchFunctionSemantics(m_a, methods_i, f_v, f_d);
       if (c_m : NULL) {
-        succ = false; 
+        succ = FALSE; 
         break;
       } 
-      f_m : (XFORM.AdaptApI(m_a, c_m)) :: f_m;
-    enddo
+      f_m = (XFORM.AdaptApI(m_a, c_m)) :: f_m;
+    enddo;
     
-    if (succ) then
-      result : CODE.AbstractionImpl#(abs, f_v, f_d, f_m)  :: result;
-    endif;
-    
+    if (succ) {
+      result = (CODE.AbstractionImpl#(abs, f_v, f_d, f_m))  :: result;
+    }
   enddo;
   return result;
   
@@ -161,12 +162,16 @@ note: returns AbstractionDataImpl#(f_v, f_d)
 
   foreach f_v \in XFORM.PossibleMappings(p_v, p_i) do
     DEBUG{f_v};
-    f_d = NULL;  <<* D_i is all internal state implementations
+    D_i = NULL;  <<* D_i is all internal state implementations
+    f_d = NULL;
+
     foreach d_a = ID \in data_a do
       if (!(d_a : CODE.ZeroOrMoreData)) {
         d_i = XFORM.TranslateToImplementation(d_a, f_v);
-        f_d = f_d :: d_i;
+        f_d = d_i :: f_d;
       }
+      print("d_i is " d_i);
+      print("D_i is " f_d);
     enddo;
 
     succ = TRUE;
@@ -179,7 +184,7 @@ note: returns AbstractionDataImpl#(f_v, f_d)
     enddo;
   
     if (succ)
-      result : CODE.AbstractionDataImpl#(_,f_v,f_d) :: result;
+      result = (CODE.AbstractionDataImpl#(_,f_v,f_d)) :: result;
   
   enddo;  
   return result;
@@ -197,6 +202,7 @@ f_d =
 note: returns
 *************************************************************>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
+  print("******************************Calling MatchFunctionSemantics");
   DEBUG{m_a};
   DEBUG{methods_i};
   DEBUG{f_v};
@@ -208,11 +214,9 @@ note: returns
     d_j = XFORM.SymbolicEvaluation(m_i, f_d);
     (d_a, d_b) = XFORM.AbstractionTransition(m_a);
     if (XFORM.is_subset((XFORM.TranslateToImplementation(d_a, f_v), D_i)) && (XFORM.is_subset((XFORM.TranslateToImplementation(d_b, f_v), d_j))))
-      result : result :: (m_i, d_j);
+      result = result :: (m_i, d_j);
   enddo;
   return result;
-
-  print("******************************Calling MatchFunctionSemantics");
 </xform>
 
 <************************************************************
@@ -240,6 +244,24 @@ Helper Functions
   return result;
 </xform>
 
+<*** Input = d_a : an abstraction state that includes list of abstraction variables (e.g., top)
+             f_v : mapping of abstraction variables to class variables 
+   returns implementation of abstraction state by replacing abstraction var by class variables 
+   
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: d_a===>POETString:"top"
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: f_v===>POETList:(("top","head") ("top","end"))
+
+DEBUGGING at level 1
+END DEBUGGING at level 1
+DEBUGGING result: output===>POETList:(("end","head") ("end","end"))
+
+attention: should it be instead ("head","head")("end","end")?
+   ***>
 <xform TranslateToImplementation pars=(d_a, f_v)>
   print("******************************Calling TranslateToImplementation");
   DEBUG{d_a};
@@ -251,10 +273,19 @@ Helper Functions
   return DEBUG{output};
 </xform>
 
-<* Input = m_a :  *>
+<*** Input = m_a : single abstraction state transition
+     Output = d_a, d_b = input states, output states in this format?
+     (name of abstraction state transition, d_a, d_b)?
+     ("Push",({ top elem ... } * elem1 -> { top elem1 elem ...}))
+     ("Pop",({ top elem1 elem ...} -> elem1 * { top elem ...}))
+     ("Empty",(({ top } -> true), ({ top elem1 elem ...} -> false))
+***>
 <xform AbstractionTransition pars=(m_a)>
   print("******************************Calling AbstractionTransition");
-  DEBUG{m_a};
+  result = NULL;
+  foreach CODE.AbstractionMethod#(n=_,a=_,_,b=_) \in m_a do
+    result = (n, a, b) :: result;
+  enddo;
 </xform>
 
 <xform AdaptApI pars=(a, b)>
