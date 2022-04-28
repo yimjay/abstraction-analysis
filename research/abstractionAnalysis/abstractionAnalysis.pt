@@ -210,7 +210,7 @@ note: returns
 
   result = NULL;
 
-  foreach m_i = CODE.ClassTypeName \in methods_i do
+  foreach m_i \in methods_i do
     d_j = XFORM.SymbolicEvaluation(m_i, f_d);
     (d_a, d_b) = XFORM.AbstractionTransition(m_a);
     if (XFORM.is_subset((XFORM.TranslateToImplementation(d_a, f_v), D_i)) && (XFORM.is_subset((XFORM.TranslateToImplementation(d_b, f_v), d_j))))
@@ -286,6 +286,7 @@ attention: should it be instead ("head","head")("end","end")?
   foreach CODE.AbstractionMethod#(n=_,a=_,_,b=_) \in m_a do
     result = (n, a, b) :: result;
   enddo;
+  return result;
 </xform>
 
 <xform AdaptApI pars=(a, b)>
