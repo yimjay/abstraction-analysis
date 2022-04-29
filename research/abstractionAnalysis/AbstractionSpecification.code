@@ -18,9 +18,8 @@
 @name@ : @body@
 </code>
 
-<code MethodSpec pars = (thisObj : CODE.Record, inputs : CODE.RestOfInput|"",
-                                  outputs : LIST(CODE.Object, "*"))> 
-@thisObj@@inputs@ -> @outputs@;
+<code MethodSpec pars = (thisObj : CODE.Record, inputs : CODE.RestOfInput|"",modifiedObj : CODE.Record,outputs : CODE.RestOfInput|"")> 
+@thisObj@@inputs@ -> @modifiedObj@@outputs@;
 </code>
 
 <code Object pars=(val : ID | CODE.Record)>

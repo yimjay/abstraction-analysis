@@ -291,7 +291,12 @@ Output = member variables that are pointers
   d_a = NULL;
   d_b = NULL;
 
-  DEBUG{m_a};
+  CODE.AbstractionMethod#(_,body=_) = m_a;
+
+  foreach mspec = CODE.MethodSpec#(r=_,_,o=_,_) \in body do
+    d_a = r :: d_a;
+    d_b = o :: d_b;
+  enddo;
 
   print("d_a is " d_a);
   print("d_b is " d_b);
