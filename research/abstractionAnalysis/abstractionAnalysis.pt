@@ -11,7 +11,7 @@ Define input command line parameters
 <************************************************************
 Define output command line parameters
 *************************************************************>
-<parameter outputFile default=""  message="output file name"/>
+<parameter outputFile default="" message="output file name"/>
 
 <************************************************************
 Parse inputFile and specFile
@@ -24,8 +24,11 @@ Main driver for abstraction analysis
 *************************************************************>
 <eval 
   result = NULL;
+  n = 0;
   foreach class = CODE.ClassType \in inputCode do
     foreach abs = CODE.Abstraction \in spec do
+      n += 1;
+      print("********************************************CALL NUMBER " n);
       print("Arguments for MatchAbstraction are: ");
       print("class: " class);
       print("abs: " abs);
@@ -46,24 +49,32 @@ Unparse results
 <************************************************************
 Forward declarations
 ************************************************************>
-<*** f_v maps all variables in data_a to its corresponding C++ member variables;
-     f_d maps each possible abstraction state in data_a to its corresponding C++ data representation *>
+<*** 
+    f_v maps all variables in data_a to its corresponding C++ member variables;
+    f_d maps each possible abstraction state in data_a to its corresponding C++ data representation 
+***>
 <code AbstractionDataImpl pars=(data_a, f_v, f_d)/>
 
-<*** f_i maps each state transition in methods_a to its corresponding C++ code implementation***>
+<*** 
+    f_i maps each state transition in methods_a to its corresponding C++ code implementation
+***>
 <code AbstractionFunctionImpl pars=(methods_a, f_i)/>
 
-<*** f_v maps all variables in abs  to its corresponding C++ member variable implementation;
-     f_d maps each possible abstraction state in abs to its corresponding C++ data representation
-     f_m maps each state transition in methods_a to its corresponding C++ code implementation***>
+<*** 
+    f_v maps all variables in abs  to its corresponding C++ member variable implementation;
+    f_d maps each possible abstraction state in abs to its corresponding C++ data representation
+    f_m maps each state transition in methods_a to its corresponding C++ code implementation
+***>
 <code AbstractionImpl pars=(abs, f_v, f_d, f_m)/>
 
-<*** returns AbstractionDataImpl if semantics of data_a can be successfully mapped 
-to the variables and methods of the C++ class ***>
+<*** 
+    returns AbstractionDataImpl if semantics of data_a can be successfully mapped to the variables and methods of the C++ class
+***>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)/>
 
-<*** returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped 
-to the variables and methods of the C++ class ***>
+<*** 
+    returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped to the variables and methods of the C++ class
+***>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)/>
 
 <*** returns possible combinations of position variables of abstraction and pointer member variables of C++ class ***>
@@ -178,7 +189,7 @@ note: returns AbstractionDataImpl#(f_v, f_d)
     
     foreach m_i \in methods_i do
       d_j = XFORM.SymbolicEvaluation(m_i, f_d);
-      if (!XFORM.is_subset(d_j, f_d))
+      if (!XFORM.is_subset(d_j, D_i))
         succ = FALSE;
         break;
     enddo;
@@ -222,71 +233,70 @@ note: returns
 <************************************************************
 Helper Functions
 *************************************************************>
+
+<***
+Input = data_a : a representation of the internal state of the abstraction
+Output = position variables of the internal state of the abstraction where position variables are defined as variables not followed by ...
+***>
 <xform PositionVariablesOfAbstraction pars=(data_a)>
   print("******************************Calling PositionVariables");
   result=NULL;
   foreach n = ID \in DEBUG{data_a} do
+    result = n :: result;
+    <**
     if (!(n : CODE.ZeroOrMoreData)) {
       result = n :: result;
     }
+    **>
+    print("PositionVariblesOfAbstraction's result so far: " result);
   enddo;
  return result;
 </xform>
 
+<***
+Input = vars_i : member variables of C++ class being analyzed
+Output = member variables that are pointers
+***>
 <xform PointerMemberVariablesOfClass pars=(vars_i)>
   print("******************************Calling PointerMemberVariablesOfClass");
   result=NULL;
   foreach decl = CODE.TypeInfo#(t=_,v=_, _) \in DEBUG{vars_i} do
     if (t : CODE.PtrType) {
-      result = decl :: result;
+      result = v :: result;
     }
   enddo;
+  print("PointerMemberVariablesOfClass's result so far: " result);
   return result;
 </xform>
 
 <*** Input = d_a : an abstraction state that includes list of abstraction variables (e.g., top)
              f_v : mapping of abstraction variables to class variables 
-   returns implementation of abstraction state by replacing abstraction var by class variables 
-   
-DEBUGGING at level 1
-END DEBUGGING at level 1
-DEBUGGING result: d_a===>POETString:"top"
-
-DEBUGGING at level 1
-END DEBUGGING at level 1
-DEBUGGING result: f_v===>POETList:(("top","head") ("top","end"))
-
-DEBUGGING at level 1
-END DEBUGGING at level 1
-DEBUGGING result: output===>POETList:(("end","head") ("end","end"))
-
-attention: should it be instead ("head","head")("end","end")?
-   ***>
+     Output = returns implementation of abstraction state by replacing abstraction var by class variables in the representation of the abstraction state
+***>
 <xform TranslateToImplementation pars=(d_a, f_v)>
   print("******************************Calling TranslateToImplementation");
-  DEBUG{d_a};
-  DEBUG{f_v};
   output = d_a;
   foreach mapping=(v1=_, v2=_) \in f_v do
     output = REPLACE(v1, v2, output);
   enddo;
-  return DEBUG{output};
+  return output;
 </xform>
 
 <*** Input = m_a : single abstraction state transition
-     Output = d_a, d_b = input states, output states in this format?
-     (name of abstraction state transition, d_a, d_b)?
-     ("Push",({ top elem ... } * elem1 -> { top elem1 elem ...}))
-     ("Pop",({ top elem1 elem ...} -> elem1 * { top elem ...}))
-     ("Empty",(({ top } -> true), ({ top elem1 elem ...} -> false))
+     Output = d_a : set of abstraction states that can be used as input to state transition m_a 
+              d_b : set of abstraction states that can be produced as output by state transition m_a
 ***>
 <xform AbstractionTransition pars=(m_a)>
   print("******************************Calling AbstractionTransition");
-  result = NULL;
-  foreach CODE.AbstractionMethod#(n=_,a=_,_,b=_) \in m_a do
-    result = (n, a, b) :: result;
-  enddo;
-  return result;
+  d_a = NULL;
+  d_b = NULL;
+
+  DEBUG{m_a};
+
+  print("d_a is " d_a);
+  print("d_b is " d_b);
+
+  return (d_a, d_b);
 </xform>
 
 <xform AdaptApI pars=(a, b)>
@@ -296,11 +306,20 @@ attention: should it be instead ("head","head")("end","end")?
 <xform PossibleMappings pars=(p_v, p_i)>
   print("******************************Calling PossibleMappings");
   result = NULL;
+
+  foreach pv = ID \in p_v do
+    foreach i = ID \in p_i do
+      result = (pv, i) :: result;
+    enddo;
+  enddo;
+
+  <**
   foreach pv = ID \in p_v do
     foreach i = CODE.TypeInfo#(t=_,v=_, _) \in p_i do
       result = (pv, v) :: result;
     enddo;
   enddo;
+  **>
   return result;
 </xform>
 
@@ -308,4 +327,8 @@ attention: should it be instead ("head","head")("end","end")?
   print("******************************Calling SymbolicEvaluation");
   DEBUG{m_i};
   DEBUG{f_d};
+</xform>
+
+<xform CheckEqualityBetweenStates pars=(temp)>
+  print("******************************Calling CheckEqualityBetweenStates");
 </xform>
