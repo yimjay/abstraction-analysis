@@ -127,6 +127,9 @@ note: returns
   print("******************************member functions are " methods_i);
 
   CODE.Abstraction#(name_a, data_a, methods_a) = abs;
+  DEBUG{name_a};
+  DEBUG{data_a};
+  DEBUG{methods_a};
 
   result = NULL;
   foreach AbstractionDataImpl#(_, f_v =_, f_d = _) \in MatchDataSemantics(data_a, vars_i, methods_i) do
@@ -135,7 +138,8 @@ note: returns
     f_m = NULL;
     succ = TRUE;
 
-    foreach m_a \in methods_a do
+    foreach m_a = CODE.AbstractionMethod \in methods_a do
+      print("m_a in MatchAbstraction is " m_a);
       c_m = MatchFunctionSemantics(m_a, methods_i, f_v, f_d);
       if (c_m : NULL) {
         succ = FALSE; 
@@ -215,7 +219,8 @@ note: returns
 *************************************************************>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
   print("******************************Calling MatchFunctionSemantics");
-  DEBUG{m_a};
+  <*attention: m_a is not a single*>
+  print("m_a in MatchFunctionSemantics is " m_a);
   DEBUG{methods_i};
   DEBUG{f_v};
   DEBUG{f_d};
@@ -292,8 +297,12 @@ Output = member variables that are pointers
   d_a = NULL;
   d_b = NULL;
 
+  print("m_a in AbstractionTransition is " m_a);
 
-  foreach mspec = CODE.MethodSpec#(r=_,_,o=_,_) \in m_a do
+  <** attention: currently m_a is not a single state transition**>
+  CODE.AbstractionMethod#(_,body=_) = m_a;
+
+  foreach mspec = CODE.MethodSpec#(r=_,_,o=_,_) \in body do
     d_a = r :: d_a;
     d_b = o :: d_b;
   enddo;
