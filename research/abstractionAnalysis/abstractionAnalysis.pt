@@ -179,17 +179,17 @@ note: returns AbstractionDataImpl#(f_v, f_d)
     foreach d_a = ID \in data_a do
       if (!(d_a : CODE.ZeroOrMoreData)) {
         d_i = XFORM.TranslateToImplementation(d_a, f_v);
-        f_d = d_i :: f_d;
+        D_i = D_i :: d_i;
       }
       print("d_i is " d_i);
-      print("f_d is " f_d);
+      print("D_i is " D_i);
     enddo;
 
     succ = TRUE;
     
     foreach m_i \in methods_i do
-      d_j = XFORM.SymbolicEvaluation(m_i, f_d);
-      if (!XFORM.is_subset(d_j, D_i))
+      D_j = XFORM.SymbolicEvaluation(m_i, D_i);
+      if (!XFORM.is_subset(D_j, D_i))
         succ = FALSE;
         break;
     enddo;
@@ -225,7 +225,7 @@ note: returns
   foreach m_i \in methods_i do
     d_j = XFORM.SymbolicEvaluation(m_i, f_d);
     (d_a, d_b) = XFORM.AbstractionTransition(m_a);
-    if (XFORM.is_subset((XFORM.TranslateToImplementation(d_a, f_v), D_i)) && (XFORM.is_subset((XFORM.TranslateToImplementation(d_b, f_v), d_j))))
+    if (XFORM.is_subset((XFORM.TranslateToImplementation(d_a, f_v), f_d)) && (XFORM.is_subset((XFORM.TranslateToImplementation(d_b, f_v), f_d))))
       result = result :: (m_i, d_j);
   enddo;
   return result;
@@ -292,9 +292,8 @@ Output = member variables that are pointers
   d_a = NULL;
   d_b = NULL;
 
-  CODE.AbstractionMethod#(_,body=_) = m_a;
 
-  foreach mspec = CODE.MethodSpec#(r=_,_,o=_,_) \in body do
+  foreach mspec = CODE.MethodSpec#(r=_,_,o=_,_) \in m_a do
     d_a = r :: d_a;
     d_b = o :: d_b;
   enddo;
