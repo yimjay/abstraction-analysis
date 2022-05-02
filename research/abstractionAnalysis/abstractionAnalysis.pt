@@ -113,9 +113,9 @@ abs = (name_a, vars_a, data_a, methods_a)
       to match against
 note: returns
 (f_v, f_d, f_m)  where  
-      f_v maps var_a to vars_i, 
-      f_d maps internal states,
-      f_m  maps methods_a to C++ code that invokes methods_i
+      f_v maps all variables in abs  to its corresponding C++ member variable implementation;
+      f_d maps each possible abstraction state in abs to its corresponding C++ data representation
+      f_m maps each state transition in methods_a to its corresponding C++ code implementation
 *************************************************************>
 <xform MatchAbstraction pars=(input, abs)>
   CODE.ClassType#(name_i, body_i, _) = input;
@@ -155,9 +155,9 @@ note: returns
 <************************************************************
 MatchDataSemantics
 *************************************************************
-note: data_a: vars from abstraction
-      vars_i: vars from implementation
-      methods_i: methods from implementation
+note: data_a: data from abstraction specification to match against
+      vars_i: vars from C++ implementation to analyze
+      methods_i: methods from C++ implementation to analyze
 note: returns AbstractionDataImpl#(f_v, f_d)
 *************************************************************>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)>
@@ -182,7 +182,7 @@ note: returns AbstractionDataImpl#(f_v, f_d)
         f_d = d_i :: f_d;
       }
       print("d_i is " d_i);
-      print("D_i is " f_d);
+      print("f_d is " f_d);
     enddo;
 
     succ = TRUE;
@@ -206,10 +206,11 @@ note: returns AbstractionDataImpl#(f_v, f_d)
 MatchFunctionSemantics
 *************************************************************
 note: arguments
-m_a = 
-methods_i = 
-f_v = 
-f_d = 
+m_a = single interface function of abstraction specification 
+      to match against
+methods_i = member methods of C++ class to analyze
+f_v = maps all variables in abstraction to its corresponding C++ member variable implementation
+f_d = maps each possible abstraction state in abs to its corresponding C++ data representation
 note: returns
 *************************************************************>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
