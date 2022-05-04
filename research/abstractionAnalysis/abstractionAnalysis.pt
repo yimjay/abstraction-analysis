@@ -197,7 +197,9 @@ returns AbstractionDataImpl if semantics of data_a can be successfully mapped to
   
   result = NULL;
 
-  foreach f_v \in XFORM.PossibleMappings(p_v, p_i) do
+  <*foreach pair = CODE.PairOfPossibleMappings#(_,_) \in f_v do*>
+  foreach f_v=(_,_) \in XFORM.PossibleMappings(p_v, p_i) do
+    <*debug: f_v should be a single possible mapping. Currently list of all mappings. Save XFORM possible mapping to a var and traverse (easier to trace)*>
     print("f_v from Possible Mappings is " f_v);
     D_i = NULL;  <<* D_i is all internal state implementations
 
@@ -348,14 +350,15 @@ Output = member variables that are pointers
       result = (pv, i) :: result;
     enddo;
   enddo;
-
-  <**
+  
+  <*
   foreach pv = ID \in p_v do
     foreach i = CODE.TypeInfo#(t=_,v=_, _) \in p_i do
       result = (pv, v) :: result;
     enddo;
   enddo;
-  **>
+  *>
+
   return result;
 </xform>
 
