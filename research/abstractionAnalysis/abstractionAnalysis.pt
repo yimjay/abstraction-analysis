@@ -31,11 +31,11 @@ Main driver for abstraction analysis
       print("*****************************************************************");
       print("CALL TO MAIN DRIVER OF PROGRAM #" n);
       print("*****************************************************************");
-      print("Arguments for MatchAbstraction are: ");
+      <*print("Arguments for MatchAbstraction are: ");
       print("class:");
       print(class);
       print("abs:");
-      print(abs);
+      print(abs);*>
       result1 = XFORM.MatchAbstraction(class, abs);
       if (result1 != NULL) {
          result = result1 :: result;
@@ -90,7 +90,9 @@ Forward declarations
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)/>
 
 <*** 
-    returns possible combinations of position variables of abstraction and pointer member variables of C++ class 
+    Input: p_v = position variables of abstraction to be matched against
+           p_i = pointer member variables of C++ class to be analyzed
+    returns a list of possible implementations of all position variables of abstraction 
 ***>
 <xform PossibleMappings pars=(p_v, p_i)/>
 
@@ -148,7 +150,7 @@ returns (f_v, f_d, f_m)  where
   print("*****************************************************************Member variables are " vars_i);
 
   methods_i = XFORM.member_functions(input);
-  print("*****************************************************************Member functions are " methods_i);
+  <*print("*****************************************************************Member functions are " methods_i);*>
 
   CODE.Abstraction#(name_a, data_a, methods_a) = abs;
 
@@ -188,26 +190,33 @@ returns AbstractionDataImpl if semantics of data_a can be successfully mapped to
 *************************************************************>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)>
   print("******************************Calling MatchDataSemantics");
-  print("data_a is " data_a);
+  <*print("data_a is " data_a);
   print("vars_i is " vars_i);
-  print("methods_i is " methods_i);
+  print("methods_i is " methods_i);*>
 
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
   
   result = NULL;
 
-  <*foreach pair = CODE.PairOfPossibleMappings#(_,_) \in f_v do*>
   foreach f_v=(_,_) \in XFORM.PossibleMappings(p_v, p_i) do
-    <*debug: f_v should be a single possible mapping. Currently list of all mappings. Save XFORM possible mapping to a var and traverse (easier to trace)*>
     print("f_v from Possible Mappings is " f_v);
     D_i = NULL;  <<* D_i is all internal state implementations
 
-    foreach d_a = ID \in data_a do
-      if (!(d_a : CODE.ZeroOrMoreData)) {
+    print("data_a in MatchDataSemantics is " data_a);
+
+    foreach d_a = CODE.Record#(var=_) \in data_a do
+      print("d_a in MatchDataSemantics is " d_a);
+      
+      d_i = XFORM.TranslateToImplementation(d_a, f_v);
+      print("d_i after call to TranslateToImplementation is " d_i);
+      D_i = d_i :: D_i;
+      
+      <*if (!(d_a : CODE.ZeroOrMoreData)) {
         d_i = XFORM.TranslateToImplementation(d_a, f_v);
-        D_i = D_i :: d_i;
-      }
+        print("d_i after call to TranslateToImplementation is " d_i);
+        D_i = d_i :: D_i;
+      }*>
       print("d_i is " d_i);
       print("D_i is " D_i);
     enddo;
@@ -306,10 +315,13 @@ Output = member variables that are pointers
 ***>
 <xform TranslateToImplementation pars=(d_a, f_v)>
   print("******************************Calling TranslateToImplementation");
+  print("d_a in TranslateToImplementation is " d_a);
+  print("f_v in TranslateToImplementation is " f_v);
   output = d_a;
   foreach mapping=(v1=_, v2=_) \in f_v do
     output = REPLACE(v1, v2, output);
   enddo;
+  print("output in TranslateToImplementation is" output);
   return output;
 </xform>
 
@@ -341,6 +353,11 @@ Output = member variables that are pointers
   print("******************************Calling AdaptAPI");
 </xform>
 
+<*** 
+    Input: p_v = position variables of abstraction to be matched against
+           p_i = pointer member variables of C++ class to be analyzed
+    returns a list of possible implementations of all position variables of abstraction 
+***>
 <xform PossibleMappings pars=(p_v, p_i)>
   print("******************************Calling PossibleMappings");
   result = NULL;
