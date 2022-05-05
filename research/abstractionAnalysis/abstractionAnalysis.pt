@@ -252,7 +252,7 @@ returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped t
     da_fv = XFORM.TranslateToImplementation(d_a, f_v);
     db_fv = XFORM.TranslateToImplementation(d_b, f_v);
     if (XFORM.is_subset(da_fv, f_d) && XFORM.is_subset(db_fv, f_d)){
-      result = result :: (m_i, d_j);
+      result = (m_i, d_j) :: result;
     }
   enddo;
   return result;
@@ -343,15 +343,31 @@ Output = member variables that are pointers
 ***>
 <xform PossibleMappings pars=(p_v, p_i)>
   print("******************************Placeholder for PossibleMappings");
+  temp = MAP{};
+
+  foreach pv = ID \in p_v do
+    temp[pv] = p_i;
+  enddo;
+
+  print(temp);
+
   result = NULL;
 
+  foreach cur=(from=_,to=_) \in temp do
+    foreach t = ID \in to do
+      result = (from, t) :: result;
+    enddo;
+  enddo;
+
+  DEBUG{result};
+
+  <*
   foreach pv = ID \in p_v do
     foreach i = ID \in p_i do
       result = (pv, i) :: result;
     enddo;
   enddo;
   
-  <*
   foreach pv = ID \in p_v do
     foreach i = CODE.TypeInfo#(t=_,v=_, _) \in p_i do
       result = (pv, v) :: result;
