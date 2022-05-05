@@ -29,7 +29,7 @@ Main driver for abstraction analysis
     foreach abs = CODE.Abstraction \in spec do
       n += 1;
       print("*****************************************************************");
-      print("CALL TO MAIN DRIVER OF PROGRAM #" n);
+      print("MATCHING ATTEMPT #" n);
       print("*****************************************************************");
       <*print("Arguments for MatchAbstraction are: ");
       print("class:");
@@ -147,10 +147,7 @@ returns (f_v, f_d, f_m)  where
   CODE.ClassType#(name_i, body_i, _) = input;
 
   vars_i = XFORM.member_variables(body_i);
-  print("*****************************************************************Member variables are " vars_i);
-
   methods_i = XFORM.member_functions(input);
-  <*print("*****************************************************************Member functions are " methods_i);*>
 
   CODE.Abstraction#(name_a, data_a, methods_a) = abs;
 
@@ -189,10 +186,6 @@ note: data_a: data from abstraction specification to match against
 returns AbstractionDataImpl if semantics of data_a can be successfully mapped to the variables and methods of the C++ class
 *************************************************************>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)>
-  print("******************************Calling MatchDataSemantics");
-  <*print("data_a is " data_a);
-  print("vars_i is " vars_i);
-  print("methods_i is " methods_i);*>
 
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
@@ -250,11 +243,6 @@ f_d = maps each possible abstraction state in abs to its corresponding C++ data 
 returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped to the variables and methods of the C++ class
 *************************************************************>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
-  print("******************************Calling MatchFunctionSemantics");
-  <*print("m_a in MatchFunctionSemantics is " m_a);
-  DEBUG{methods_i};
-  DEBUG{f_v};
-  DEBUG{f_d};*>
 
   result = NULL;
 
@@ -279,7 +267,6 @@ Input = data_a : a representation of the internal state of the abstraction
 Output = position variables of the internal state of the abstraction where position variables are defined as variables not followed by ...
 ***>
 <xform PositionVariablesOfAbstraction pars=(data_a)>
-  print("******************************Calling PositionVariables");
   result=NULL;
   foreach n = ID \in data_a do
     result = n :: result;
@@ -288,7 +275,6 @@ Output = position variables of the internal state of the abstraction where posit
       result = n :: result;
     }
     **>
-    <*print("PositionVariblesOfAbstraction's result so far: " result);*>
   enddo;
  return result;
 </xform>
@@ -298,14 +284,12 @@ Input = vars_i : member variables of C++ class being analyzed
 Output = member variables that are pointers
 ***>
 <xform PointerMemberVariablesOfClass pars=(vars_i)>
-  print("******************************Calling PointerMemberVariablesOfClass");
   result=NULL;
   foreach decl = CODE.TypeInfo#(t=_,v=_, _) \in vars_i do
     if (t : CODE.PtrType) {
       result = v :: result;
     }
   enddo;
-  <*print("PointerMemberVariablesOfClass's result so far: " result);*>
   return result;
 </xform>
 
@@ -314,7 +298,6 @@ Output = member variables that are pointers
      Output = returns implementation of abstraction state by replacing abstraction var by class variables in the representation of the abstraction state
 ***>
 <xform TranslateToImplementation pars=(d_a, f_v)>
-  print("******************************Calling TranslateToImplementation");
   print("d_a in TranslateToImplementation is " d_a);
   print("f_v in TranslateToImplementation is " f_v);
   output = d_a;
@@ -350,7 +333,7 @@ Output = member variables that are pointers
 </xform>
 
 <xform AdaptApI pars=(a, b)>
-  print("******************************Calling AdaptAPI");
+  print("******************************Placeholder for AdaptAPI");
 </xform>
 
 <*** 
@@ -359,7 +342,7 @@ Output = member variables that are pointers
     returns a list of possible implementations of all position variables of abstraction 
 ***>
 <xform PossibleMappings pars=(p_v, p_i)>
-  print("******************************Calling PossibleMappings");
+  print("******************************Placeholder for PossibleMappings");
   result = NULL;
 
   foreach pv = ID \in p_v do
@@ -380,11 +363,11 @@ Output = member variables that are pointers
 </xform>
 
 <xform SymbolicEvaluation pars=(m_i, f_d)>
-  print("******************************Calling SymbolicEvaluation");
+  print("******************************Placeholder for SymbolicEvaluation");
   <*DEBUG{m_i};
   DEBUG{f_d};*>
 </xform>
 
 <xform CheckEqualityBetweenStates pars=(temp)>
-  print("******************************Calling CheckEqualityBetweenStates");
+  print("******************************Placeholder CheckEqualityBetweenStates");
 </xform>
