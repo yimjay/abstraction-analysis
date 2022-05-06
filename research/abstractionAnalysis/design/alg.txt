@@ -61,14 +61,14 @@ Algorithm:
    P_i = pointer_member_variables_of(V_i);
    result = \emptyset;
    for each possible matching f_v : P_v -> P_i do 
-     D_i = \em]tyset;
+     D_i = \emptyset;
      for each internal state  d_a \in D_a do 
         d_i = translate_to_implementation(d_a, f_v);
-        f_d = f_d U { d_i };  
+        D_i = D_i U { d_i };  
      endfor;
      succ = true;
      for each class method m_i \in M_i do
-        d_j = symbolic_evaluation(m_i, f_d); 
+        d_j = symbolic_evaluation(m_i, f_v); <*note: clarify f_v or f_d here?*>
         if not (d_j \subseteq D_i)  then
           succ = false; 
           break;
@@ -94,9 +94,9 @@ Algorithm:
 
   result = \emptyset;
   for each class method m_i \in methods_i do
-    d_j = symbolic_evaluation(m_i, f_d); 
+    d_j = symbolic_evaluation(m_i, f_d); <*note: clarify f_v or f_d here?*>
     (d_a, d_b) = AbstractionTransition(m_a)
-    if (translate_to_implemenation(d_a, f_v) \subseteq D_i  
+    if (translate_to_implemenation(d_a, f_v) \subseteq f_d  
       and translate_to_implemenation(d_b, f_v) \subseteq  d_j)   then
         result = result U { (m_i, d_j) }
     endif
