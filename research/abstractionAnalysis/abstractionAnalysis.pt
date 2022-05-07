@@ -140,10 +140,6 @@ returns (f_v, f_d, f_m)  where
       f_m maps each state transition in methods_a to its corresponding C++ code implementation
 *************************************************************>
 <xform MatchAbstraction pars=(input, abs)>
-  print("*****************************************************************");
-  print("CALL TO MatchAbstraction");
-  print("*****************************************************************");
-  
   CODE.ClassType#(name_i, body_i, _) = input;
 
   vars_i = XFORM.member_variables(body_i);
@@ -153,8 +149,8 @@ returns (f_v, f_d, f_m)  where
 
   result = NULL;
   foreach AbstractionDataImpl#(_, f_v =_, f_d = _) \in MatchDataSemantics(data_a, vars_i, methods_i) do
-    print("f_v is " f_v);
-    print("f_d is " f_d);
+    <*print("f_v is " f_v);
+    print("f_d is " f_d);*>
     f_m = NULL;
     succ = TRUE;
 
@@ -172,7 +168,6 @@ returns (f_v, f_d, f_m)  where
       result = (CODE.AbstractionImpl#(abs, f_v, f_d, f_m))  :: result;
     }
   enddo;
-  print("TEST OUTPUT in MatchAbstraction");
   return result;
   
 </xform>
@@ -193,10 +188,7 @@ returns AbstractionDataImpl if semantics of data_a can be successfully mapped to
   result = NULL;
 
   foreach f_v=(_,_) \in XFORM.PossibleMappings(p_v, p_i) do
-    print("f_v from Possible Mappings is " f_v);
     D_i = NULL;  <<* D_i is all internal state implementations
-
-    print("data_a in MatchDataSemantics is " data_a);
 
     foreach d_a = CODE.Record#(var=_) \in data_a do
       print("d_a in MatchDataSemantics is " d_a);
@@ -210,14 +202,12 @@ returns AbstractionDataImpl if semantics of data_a can be successfully mapped to
         print("d_i after call to TranslateToImplementation is " d_i);
         D_i = d_i :: D_i;
       }*>
-      print("d_i is " d_i);
-      print("D_i is " D_i);
+      
     enddo;
 
     succ = TRUE;
     
     foreach m_i = CODE.FunctionDecl \in methods_i do
-      print("Calling SymbolicEvaluation within MatchDataSemantics with m_i " m_i);
       D_j = XFORM.SymbolicEvaluation(m_i, D_i);
       if (!XFORM.is_subset(D_j, D_i))
         succ = FALSE;
@@ -336,6 +326,20 @@ Output = member variables that are pointers
   print("******************************Placeholder for AdaptAPI");
 </xform>
 
+<***
+Input = mapping : list of combinations of position variables and pointer member variables
+        target : a position variable or pointer member variable
+returns TRUE if the target can be found in mapping
+***>
+<xform MappingContains pars=(mapping, target)>
+  foreach pair = (pv=_,pi=_) \in mapping do 
+    if(pv : target || pi : target){
+      return TRUE;
+    }
+  enddo;
+  return FALSE;
+</xform>
+
 <*** 
     Input: p_v = position variables of abstraction to be matched against
            p_i = pointer member variables of C++ class to be analyzed
@@ -343,13 +347,48 @@ Output = member variables that are pointers
 ***>
 <xform PossibleMappings pars=(p_v, p_i)>
   print("******************************Placeholder for PossibleMappings");
+
+  result = NULL;
+  temp = NULL;
+  unused = NULL;
+
+  foreach pv=ID \in p_v do
+    foreach pi=ID \in p_i do
+      if (XFORM.MappingContains(temp, pv) || XFORM.MappingContains(temp, pi)){
+        <*save the invalid mappings*>
+        unused = (pv, pi) :: unused;
+        continue;
+      } else {
+        temp = (pv, pi) :: temp;
+      }
+    enddo;
+  enddo;
+
+  result = temp :: unused :: result;
+
+  DEBUG{result};
+
+  <* CARTESIAN PRODUCT *>
+  allPossibilities = NULL;
+  foreach pv = ID \in p_v do
+    foreach pi = ID \in p_i do
+      allPossibilities = (pv, pi) :: allPossibilities;
+    enddo;
+  enddo;
+
+  print(allPossibilities);
+
+  <*result = NULL;
+  pair = NULL;
+
+  list = (p_i); 
+  DEBUG{result};
+
   temp = MAP{};
 
   foreach pv = ID \in p_v do
     temp[pv] = p_i;
   enddo;
-
-  print(temp);
 
   result = NULL;
 
@@ -361,7 +400,6 @@ Output = member variables that are pointers
 
   DEBUG{result};
 
-  <*
   foreach pv = ID \in p_v do
     foreach i = ID \in p_i do
       result = (pv, i) :: result;
