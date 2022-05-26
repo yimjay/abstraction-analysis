@@ -373,37 +373,32 @@ Each mapping consists of each position variable mapped to a single pointer membe
 </xform>
 
 /***
-Input = p_i : pointer member variables of C++ class to be analyzed
-Output = permutations of p_i
+
 ***/
-<xform PermuteMappings pars=(p_i)>
-  permutations = NULL;
-  foreach config=(_) \in XFORM.PermuteConfigs(len(p_i)) do
-    permutations = PERMUTE(config, p_i) :: permutations;
-  enddo;
-  return permutations;
-</xform>
-
-/***
-Input = length : length of p_i
-Output = list of permutations of integers from 1 to length
-***/
-<xform PermuteConfigs pars=(length)>
-  configs = NULL;
-
-  <* Create list of 1 ... length *>
-  for(p = 1; p <= length; p++){
-    config = p :: config;
-  }
-
-  <* Make permutations of list of integers *>
+<xform PermuteMappings pars=()>
   
 </xform>
 
-<xform Permute pars=()>
+/***
+Inserts item at index pos in given input
+***/
+<xform InsertAtPosition pars=(input, item, pos)>
+  new_input = NULL;
 
+  if(pos == 0){
+    return item :: input;
+  }
+
+  for(i = 0; i < LEN(input); i = i+1){
+    if(i == pos){
+      new_input = TAIL(input) :: input :: new_input;
+    } else {
+      new_input = TAIL(input) :: new_input;
+    }
+  }
+
+  return new_input;
 </xform>
-
 
 <xform SymbolicEvaluation pars=(m_i, f_d)>
   print("******************************Placeholder for SymbolicEvaluation");
