@@ -67,9 +67,7 @@ Forward declarations
 <code AbstractionFunctionImpl pars=(methods_a, f_i)/>
 
 <*** 
-    abs the name, variables, data, 
-        and interface functions of abstraction specification 
-        to match against
+    abs the name, variables, data, and interface functions of abstraction specification to match against
     f_v maps all variables in abs  to its corresponding C++ member variable implementation;
     f_d maps each possible abstraction state in abs to its corresponding C++ data representation
     f_m maps each state transition in methods_a to its corresponding C++ code implementation
@@ -282,9 +280,10 @@ Output = member variables that are pointers
   return result;
 </xform>
 
-<*** Input = d_a : an abstraction state that includes list of abstraction variables (e.g., top)
-             f_v : mapping of abstraction variables to class variables 
-     Output = returns implementation of abstraction state by replacing abstraction var by class variables in the representation of the abstraction state
+<*** 
+Input = d_a : an abstraction state that includes list of abstraction variables (e.g., top)
+        f_v : mapping of abstraction variables to class variables 
+Output = returns implementation of abstraction state by replacing abstraction var by class variables in the representation of the abstraction state
 ***>
 <xform TranslateToImplementation pars=(d_a, f_v)>
   output = d_a;
@@ -294,9 +293,10 @@ Output = member variables that are pointers
   return output;
 </xform>
 
-<*** Input = m_a : single abstraction state transition
-     Output = d_a : set of abstraction states that can be used as input to state transition m_a 
-              d_b : set of abstraction states that can be produced as output by state transition m_a
+<*** 
+Input = m_a : single abstraction state transition
+Output = d_a : set of abstraction states that can be used as input to state transition m_a 
+         d_b : set of abstraction states that can be produced as output by state transition m_a
 ***>
 <xform AbstractionTransition pars=(m_a)>
   print("******************************Calling AbstractionTransition");
@@ -325,7 +325,7 @@ Output = member variables that are pointers
 <***
 Input = mapping : list of combination pairs of a position variable and a pointer member variable
         target : a position variable or pointer member variable
-returns TRUE if the target can be found in mapping
+Output = returns TRUE if the target can be found in mapping
 ***>
 <xform MappingContains pars=(mapping, target)>
   foreach pair = (pv=_,pi=_) \in mapping do 
@@ -338,32 +338,31 @@ returns TRUE if the target can be found in mapping
 
 
 <*** 
-    Input: p_v = position variables of abstraction to be matched against
-           p_i = pointer member variables of C++ class to be analyzed
-    returns a list of possible abstraction implementations, where each abstraction implementation is a mapping of all position variables of abstraction to pointer member variables of C++ class. 
+Input = p_v : position variables of abstraction to be matched against
+        p_i : pointer member variables of C++ class to be analyzed
+Output = returns a list of possible abstraction implementations, where each abstraction implementation is a mapping of all position variables of abstraction to pointer member variables of C++ class. 
     
-    Each mapping consists of each position variable mapped to a single pointer member variable of C++ class. There should be no repetition of either position variables or pointer member variables in each abstraction implementation.
+Each mapping consists of each position variable mapped to a single pointer member variable of C++ class. There should be no repetition of either position variables or pointer member variables in each abstraction implementation.
 ***>
 <xform PossibleMappings pars=(p_v, p_i)>
   result = NULL;
-
-  build an f_v: what are the inputs for each f_v -> a mapping of v_p to v_i
-    inputs to make a mapping of p_v to p_i -> p_v, p_i
-    fvFound = TRUE;
-    foreach v_p = ID \in p_v do
-      find implementation variable v_i from p_i
-      <*map v_p to first v_i in p_i that is not already in use*>
-      viFound = FALSE;
+  permutations = NULL;
+  XFORM.PermuteMappings(p_i, permutations);
+  fvFound = TRUE;
+  foreach v_p = ID \in p_v do
+    <*to find implementation variable v_i from p_i map v_p to first v_i in p_i that is not already in use*>
+    viFound = FALSE;
+    foreach permutation \in permutations do
       foreach v_i = ID \in p_i do
         if(!(XFORM.MappingContains(f_v, v_i))){
           f_v = (v_p, v_i) :: f_v;
           viFound = TRUE;
           break;
         }
-        enddo;
-        if(!viFound){
-          fvFound = FALSE;
-        }
+      enddo;
+      if(!viFound){
+        fvFound = FALSE;
+      }
     enddo;
     if(!fvFound){
       break;
@@ -371,76 +370,40 @@ returns TRUE if the target can be found in mapping
     result = f_v :: result;
   enddo;
   return result;
-
-
-
-  <*result = NULL;
-  temp = NULL;
-  unused = NULL;
--
-  foreach pv=ID \in p_v do
-    foreach pi=ID \in p_i do
-      if (XFORM.MappingContains(temp, pv) || XFORM.MappingContains(temp, pi)){
-        <*save the invalid mappings*>
-        unused = (pv, pi) :: unused;
-        continue;
-      } else {
-        temp = (pv, pi) :: temp;
-      }
-    enddo;
-  enddo;
-
-  result = temp :: unused :: result;
-
-  DEBUG{result};
-
-  CARTESIAN PRODUCT
-  allPossibilities = NULL;
-  foreach pv = ID \in p_v do
-    foreach pi = ID \in p_i do
-      allPossibilities = (pv, pi) :: allPossibilities;
-    enddo;
-  enddo;
-
-  print(allPossibilities);
-
-  result = NULL;
-  pair = NULL;
-
-  list = (p_i); 
-  DEBUG{result};
-
-  temp = MAP{};
-
-  foreach pv = ID \in p_v do
-    temp[pv] = p_i;
-  enddo;
-
-  result = NULL;
-
-  foreach cur=(from=_,to=_) \in temp do
-    foreach t = ID \in to do
-      result = (from, t) :: result;
-    enddo;
-  enddo;
-
-  DEBUG{result};
-
-  foreach pv = ID \in p_v do
-    foreach i = ID \in p_i do
-      result = (pv, i) :: result;
-    enddo;
-  enddo;
-  
-  foreach pv = ID \in p_v do
-    foreach i = CODE.TypeInfo#(t=_,v=_, _) \in p_i do
-      result = (pv, v) :: result;
-    enddo;
-  enddo;
-  *>
-
-  return result;
 </xform>
+
+/***
+Input = p_i : pointer member variables of C++ class to be analyzed
+Output = permutations of p_i
+***/
+<xform PermuteMappings pars=(p_i)>
+  permutations = NULL;
+  foreach config=(_) \in XFORM.PermuteConfigs(len(p_i)) do
+    permutations = PERMUTE(config, p_i) :: permutations;
+  enddo;
+  return permutations;
+</xform>
+
+/***
+Input = length : length of p_i
+Output = list of permutations of integers from 1 to length
+***/
+<xform PermuteConfigs pars=(length)>
+  configs = NULL;
+
+  <* Create list of 1 ... length *>
+  for(p = 1; p <= length; p++){
+    config = p :: config;
+  }
+
+  <* Make permutations of list of integers *>
+  
+</xform>
+
+<xform Permute pars=()>
+
+</xform>
+
 
 <xform SymbolicEvaluation pars=(m_i, f_d)>
   print("******************************Placeholder for SymbolicEvaluation");
