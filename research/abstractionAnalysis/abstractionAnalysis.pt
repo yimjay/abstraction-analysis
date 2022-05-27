@@ -347,11 +347,9 @@ Each mapping consists of each position variable mapped to a single pointer membe
   permutations = NULL;
   new_permutations = NULL;
   l = LEN(p_i) - 1;
-  
   if(l >= 2){
     new_permutations = DEBUG{XFORM.PermuteMappings(p_i, 0, l, permutations)};
   }
-  
   fvFound = TRUE;
   foreach v_p = ID \in p_v do
     <*to find implementation variable v_i from p_i map v_p to first v_i in p_i that is not already in use*>
@@ -378,7 +376,11 @@ Each mapping consists of each position variable mapped to a single pointer membe
 </xform>
 
 <***
-
+Input = input : list of elements to be permuted
+        start : starting index of permutation
+        end : size of input
+        permutations : current list of permutations
+Output = list of permuted elements from given input
 ***>
 <xform PermuteMappings pars=(input, start, end, permutations)>
   if(start == end){

@@ -68,7 +68,7 @@ Algorithm:
      endfor;
      succ = true;
      for each class method m_i \in M_i do
-        d_j = symbolic_evaluation(m_i, f_v); <*note: clarify f_v or f_d here?*>
+        d_j = symbolic_evaluation(m_i, f_v);
         if not (d_j \subseteq D_i)  then
           succ = false; 
           break;
