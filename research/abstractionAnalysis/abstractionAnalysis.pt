@@ -346,22 +346,45 @@ Each mapping consists of each position variable mapped to a single pointer membe
 ***>
 <xform PossibleMappings pars=(p_v, p_i)>
   result = NULL;
-  DEBUG{p_i};
-  DEBUG{XFORM.InsertAtPosition(p_i, "H", 0)};
+  permutations = NULL;
+  DEBUG{XFORM.PermuteMappings(p_i, 0, LEN(p_i), permutations)};
+
+  fvFound = TRUE;
+  foreach v_p = ID \in p_v do
+    <*to find implementation variable v_i from p_i map v_p to first v_i in p_i that is not already in use*>
+    viFound = FALSE;
+    foreach permutation \in permutations do
+      foreach v_i = ID \in p_i do
+        if(!(XFORM.MappingContains(f_v, v_i))){
+          f_v = (v_p, v_i) :: f_v;
+          viFound = TRUE;
+          break;
+        }
+      enddo;
+      if(!viFound){
+        fvFound = FALSE;
+      }
+    enddo;
+    if(!fvFound){
+      break;
+    }
+    result = f_v :: result;
+  enddo;
+
   return result;
 </xform>
 
 <***
 Comments
 ***>
-<xform PermuteMappings pars=(p_i, left, right, new_pi)>
-  if(left == right){
-    return p_i;
+<xform PermuteMappings pars=(input, l, r, result)>
+  if(l == r){
+    return result;
   } else {
-    for(i = left; i <= right; i = i+1){
-      new_pi = XFORM.SwapElements(p_i, left, i) :: new_pi;
-      new_pi = XFORM.PermuteMappings(p_i, left+1, right, new_pi) :: new_pi;
-      new_pi = XFORM.SwapElements(p_i, left, i) :: new_pi;
+    for(i = l; i <= r; i = i+1){
+      result = XFORM.SwapElements(input, l, i);
+      XFORM.PermuteMappings(result, l+1, r, result);
+      result = XFORM.SwapElements(input, l, i);
     }
   }
 </xform>
@@ -371,28 +394,30 @@ Swaps elements at index pos1 and pos2 in given input
 ***>
 <xform SwapElements pars=(input, pos1, pos2)>
   new_input = NULL;
+  pos1_elem = XFORM.ReturnAtPosition(input, pos1);
+  pos2_elem = XFORM.ReturnAtPosition(input, pos2);
+  curr = 0;
 
-  if(pos1 == pos2){
-    return input;
-  }
-
-  for(i = 0; i < LEN(input); i = i+1){
-    if (i == pos1){
-      pos1_elem = TAIL(input);
-    } else if (i == pos2){
-      pos2_elem = TAIL(input);
-    }
-  }
-
-  for(i = 0; i < LEN(input); i = i+1){
-    if (i == pos1){
-      new_input = TAIL(input) :: pos2_elem :: new_input;
-    } else if (i == pos2){
-      new_input = TAIL(input) :: pos1_elem :: new_input;
+  for(p = input; p != NULL; p = TAIL(p)){
+    if(curr : pos1){
+      new_input = pos2_elem :: new_input;
+    } else if(curr : pos2){
+      new_input = pos1_elem :: new_input;
     } else {
-      new_input = TAIL(input) :: new_input;
+      new_input = HEAD(p) :: new_input;
     }
+    curr = curr + 1;
   }
+
+  return XFORM.ReverseList(new_input);
+</xform>
+
+<***
+Returns the absolute diffence between 2 integers
+***>
+<xform AbsoluteDifference pars=(num1, num2)>
+  <*TODO: needs type checking for num1, num2*>
+  return num1 > num2 ? num1 - num2 : num2 - num1;
 </xform>
 
 <***
@@ -401,9 +426,9 @@ Inserts item at index pos in given input
 <xform InsertAtPosition pars=(input, item, pos)>
   new_input = NULL;
   curr = 0;
-
+  <*Error handling since pos must be 0 < pos < LEN(input)*>
   if(pos < 0 || pos > LEN(input)){
-    return input;
+    return -1;
   }
   
   for(p = input; p != NULL; p = TAIL(p)){
@@ -415,6 +440,54 @@ Inserts item at index pos in given input
   }
 
   return XFORM.ReverseList(new_input);
+</xform>
+
+<***
+Delete item at index pos in given input
+***>
+<xform DeleteAtPosition pars=(input, pos)>
+  new_input = NULL;
+  curr = 0;
+  <*Error handling since pos must be 0 < pos < LEN(input)*>
+  if(pos < 0 || pos > LEN(input) || input == NULL){
+    return input;
+  }
+  
+  for(p = input; p != NULL; p = TAIL(p)){
+    if(curr : pos){
+      print("do nothing");
+    } else {
+      new_input = HEAD(p) :: new_input;
+    }
+    curr = curr + 1;
+  }
+
+  return XFORM.ReverseList(new_input);
+</xform>
+
+<***
+
+***>
+<xform ReturnAtPosition pars=(input, pos)>
+  new_input = NULL;
+  result = NULL;
+  curr = 0;
+
+  <*Error handling since pos must be 0 < pos < LEN(input)*>
+  if(pos < 0 || pos > LEN(input) || input == NULL){
+    return input;
+  }
+  
+  for(p = input; p != NULL; p = TAIL(p)){
+    if(curr : pos){
+      result = HEAD(p) :: result;
+    } else {
+      new_input = HEAD(p) :: new_input;
+    }
+    curr = curr + 1;
+  }
+
+  return result;
 </xform>
 
 <xform SymbolicEvaluation pars=(m_i, f_d)>
