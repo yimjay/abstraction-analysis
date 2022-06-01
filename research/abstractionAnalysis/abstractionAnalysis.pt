@@ -345,11 +345,13 @@ Each mapping consists of each position variable mapped to a single pointer membe
 <xform PossibleMappings pars=(p_v, p_i)>
   result = NULL;
   permutations = NULL;
-  new_permutations = NULL;
-  l = LEN(p_i) - 1;
-  if(l >= 2){
-    new_permutations = DEBUG{XFORM.PermuteMappings(p_i, 0, l, permutations)};
+  f_v = NULL;
+  new_permutations = DEBUG{XFORM.PermuteMappings(p_i)};
+
+  if(new_permutations == NULL){
+    BREAK;
   }
+
   fvFound = TRUE;
   foreach v_p = ID \in p_v do
     <*to find implementation variable v_i from p_i map v_p to first v_i in p_i that is not already in use*>
@@ -373,6 +375,8 @@ Each mapping consists of each position variable mapped to a single pointer membe
   enddo;
 
   return result;
+
+  return result;
 </xform>
 
 <***
@@ -381,7 +385,7 @@ Input = input : list of elements to be permuted
         end : size of input
         permutations : current list of permutations
 Output = list of permuted elements from given input
-***>
+
 <xform PermuteMappings pars=(input, start, end, permutations)>
   if(start == end){
     permutations = input :: permutations;
@@ -392,6 +396,45 @@ Output = list of permuted elements from given input
     }
   }
   return permutations;
+</xform>
+***>
+<xform PermuteMappings pars=(input)>
+  res = NULL;
+  if(LEN(input) <= 1){
+    res = input :: res;
+  } else {
+    if(LEN(input) == 2){
+      pair = (HEAD(TAIL(input)), HEAD(input));
+      res = input :: pair :: res;
+    } else if (LEN(input) == 3){
+      <* (a,b,c) *>
+      res = input :: res;
+
+      <* (b,a,c) *>
+      pair1 = (HEAD(TAIL(input)), HEAD(input));
+      res = pair1 :: res;
+
+      <* (a,c,b) *>
+      pair2 = (HEAD(TAIL(TAIL(input))), HEAD(TAIL(input)));
+      res = pair2 :: res;
+
+      <* (c,a,b) *>
+      pair = (HEAD(TAIL(pair2)), HEAD(pair2));
+      res = pair :: res;
+
+      <* (c,b,a) *>
+      pair3 = (HEAD(TAIL(TAIL(pair2))), HEAD(TAIL(pair2)));
+      res = pair3 :: res;
+      
+      <* (b,c,a) *>
+      pair = (HEAD(TAIL(pair3)), HEAD(pair3));
+      res = pair :: res;
+      
+    } else {
+      continue;
+    }
+  }
+  return res;
 </xform>
 
 <***
