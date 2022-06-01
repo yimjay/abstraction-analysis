@@ -179,13 +179,9 @@ note: data_a: data from abstraction specification to match against
 returns AbstractionDataImpl if semantics of data_a can be successfully mapped to the variables and methods of the C++ class
 *************************************************************>
 <xform MatchDataSemantics pars=(data_a, vars_i, methods_i)>
-
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
-  
   result = NULL;
-
-  res = DEBUG{XFORM.PermuteMappings("a" "b" "c")};
 
   foreach f_v=(_,_) \in XFORM.PossibleMappings(p_v, p_i) do
     D_i = NULL;  <<* D_i is all internal state implementations
@@ -347,8 +343,7 @@ Each mapping consists of each position variable mapped to a single pointer membe
 <xform PossibleMappings pars=(p_v, p_i)>
   result = NULL;
   f_v = NULL;
-  permutations = DEBUG{XFORM.PermuteMappings(p_i)};
-
+  permutations = XFORM.PermuteMappings(p_i);
   fvFound = TRUE;
   foreach v_p = ID \in p_v do
     <*to find implementation variable v_i from p_i map v_p to first v_i in p_i that is not already in use*>
@@ -370,9 +365,6 @@ Each mapping consists of each position variable mapped to a single pointer membe
     }
     result = f_v :: result;
   enddo;
-
-  return result;
-
   return result;
 </xform>
 
@@ -382,18 +374,6 @@ Input = input : list of elements to be permuted
         end : size of input
         permutations : current list of permutations
 Output = list of permuted elements from given input
-
-<xform PermuteMappings pars=(input, start, end, permutations)>
-  if(start == end){
-    permutations = input :: permutations;
-  } else {
-    for(i = start; i <= end; i = i+1){
-      input = XFORM.SwapElements(input, start, i);
-      XFORM.PermuteMappings(input, start+1, end, permutations);
-    }
-  }
-  return permutations;
-</xform>
 ***>
 <xform PermuteMappings pars=(input)>
   res = NULL;
@@ -401,8 +381,7 @@ Output = list of permuted elements from given input
     res = input :: res;
   } else {
     if(LEN(input) == 2){
-      pair = (HEAD(TAIL(input)) HEAD(input));
-      res = input :: pair :: res;
+      res = input :: (HEAD(TAIL(input)) HEAD(input)) :: res;
     } else if (LEN(input) == 3){
       <* (a,b,c) *>
       res = input :: res;
