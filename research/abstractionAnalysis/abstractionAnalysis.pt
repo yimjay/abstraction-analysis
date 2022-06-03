@@ -182,36 +182,21 @@ returns AbstractionDataImpl if semantics of data_a can be successfully mapped to
   p_v = XFORM.PositionVariablesOfAbstraction(data_a);
   p_i = XFORM.PointerMemberVariablesOfClass(vars_i);
   result = NULL;
-
   foreach f_v=(_,_) \in XFORM.PossibleMappings(p_v, p_i) do
     D_i = NULL;  <<* D_i is all internal state implementations
-
     foreach d_a = CODE.Record#(var=_) \in data_a do
-      <*print("d_a in MatchDataSemantics is " d_a);*>
-      
       d_i = XFORM.TranslateToImplementation(d_a, f_v);
       D_i = d_i :: D_i;
-      
-      <*if (!(d_a : CODE.ZeroOrMoreData)) {
-        d_i = XFORM.TranslateToImplementation(d_a, f_v);
-        print("d_i after call to TranslateToImplementation is " d_i);
-        D_i = d_i :: D_i;
-      }*>
-      
     enddo;
-
     succ = TRUE;
-    
     foreach m_i = CODE.FunctionDecl \in methods_i do
       D_j = XFORM.SymbolicEvaluation(m_i, D_i);
       if (!XFORM.is_subset(D_j, D_i))
         succ = FALSE;
         break;
     enddo;
-  
     if (succ)
       result = (CODE.AbstractionDataImpl#(_,f_v,D_i)) :: result;
-  
   enddo;  
   return result;
 </xform>
@@ -228,9 +213,7 @@ f_d = maps each possible abstraction state in abs to its corresponding C++ data 
 returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped to the variables and methods of the C++ class
 *************************************************************>
 <xform MatchFunctionSemantics pars=(m_a, methods_i, f_v, f_d)>
-
   result = NULL;
-
   foreach m_i \in methods_i do
     d_j = XFORM.SymbolicEvaluation(m_i, f_d);
     (d_a, d_b) = XFORM.AbstractionTransition(m_a);
@@ -246,7 +229,6 @@ returns AbstractionFunctionImpl if semantics of m_a can be successfully mapped t
 <************************************************************
 Helper Functions
 *************************************************************>
-
 <***
 Input = data_a : a representation of the internal state of the abstraction
 Output = position variables of the internal state of the abstraction where position variables are defined as variables not followed by ...
@@ -255,11 +237,6 @@ Output = position variables of the internal state of the abstraction where posit
   result=NULL;
   foreach n = ID \in data_a do
     result = n :: result;
-    <**
-    if (!(n : CODE.ZeroOrMoreData)) {
-      result = n :: result;
-    }
-    **>
   enddo;
  return result;
 </xform>
@@ -307,9 +284,6 @@ Output = d_a : set of abstraction states that can be used as input to state tran
     d_a = r :: d_a;
     d_b = o :: d_b;
   enddo;
-
-  print("d_a is " d_a);
-  print("d_b is " d_b);
 
   return (d_a, d_b);
 </xform>
