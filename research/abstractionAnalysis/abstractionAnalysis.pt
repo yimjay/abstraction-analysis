@@ -351,12 +351,12 @@ Output = list of permuted elements from given input
 ***>
 <xform PermuteMappings pars=(input)>
   res = NULL;
-  if(LEN(input) <= 1){
-    res = input :: res;
-  } else {
-    if(LEN(input) == 2){
+  switch (LEN(input) {
+    case 0 | 1:
+      res = input :: res;
+    case 2:
       res = input :: (HEAD(TAIL(input)) HEAD(input)) :: res;
-    } else if (LEN(input) == 3){
+    case 3:
       <* (a,b,c) *>
       res = input :: res;
 
@@ -374,10 +374,8 @@ Output = list of permuted elements from given input
       
       <* (b,c,a) *>
       res = (HEAD(TAIL(input)) HEAD(TAIL(TAIL(input)))HEAD(input)) :: res;
-      
-    } else {
-      continue;
-    }
+    default:
+      ERROR("Input to PermuteMappings() has LEN > 3");
   }
   return res;
 </xform>
