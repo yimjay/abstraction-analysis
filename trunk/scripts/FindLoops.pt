@@ -1,0 +1,61 @@
+
+include analysis.pi
+
+<define ANNOTATION_FILES "funcs.annot"/>
+
+<code Program/>
+<define COLLECT_CALLS  "" />
+
+<parameter in type=STRING default="" message="input file name" />
+<parameter out type=STRING default="" message="analyzed redsult file name" />
+<parameter annot type=STRING default="" message="annotation output file name" />
+<parameter call type=STRING default="" message = "call graph file name"/>
+<parameter ext type=STRING|"" default="" message = "file extension"/>
+
+<eval inputCode=""; 
+      ext2=car(ReverseList(SPLIT(".",in))); 
+      if (ext2 : "h" || ext == "") ext = ext2;
+      PRINT("File Type:" ext);
+       /> 
+
+<define BACKTRACK 1/>
+
+<input cond=(ext : "rose") from=(in :: ANNOTATION_FILES) to=inputCode /> 
+<input cond=(ext : "c") from=(in::ANNOTATION_FILES) to=inputCode annot=0 syntax=("Cfront.code" "FindLoops.code") />
+<input cond=(ext : "C"|"cc"|"cpp") from=(in::ANNOTATION_FILES) to=inputCode annot=0 syntax=("C++front.code" "FindLoops.code") />
+<input cond=(ext : "F"|"f") from=in to=inputCode annot=0 syntax=("Ffront.code" "FindLoops.code") />
+<input cond=(ext : "F90") from=in to=inputCode annot=0 syntax=("F95front.code" "FindLoops.code") />
+
+<xform get_function_defn pars=(f)> 
+   print ("FUNCTION:" f);
+   assert(0);
+   return 0; </xform>
+
+<eval result = CollectPatterns(inputCode, _); 
+      maths = NULL; 
+      foreach c = CODE.FunctionPattern#(_,prop=_, f=_, _) \in result do
+           p3=NULL;  FunctionDecl#(_,p=_,_,_) = f;
+           foreach t=CODE.TypeInfo#(t1=_,v1=_,_) \in reverse (p) do
+              if (v1 != "") p3 = v1 :: p3;
+           enddo
+           switch (prop) {
+           case "PURE_MATH":
+              maths = (CODE.PureFunction#p3, f) :: maths;
+           case Property#("ALIAS_PARAMETER",ret=_):
+              maths = (CODE.AliasFunction#(p3,ret),f) :: maths;
+           case Property#("MODIFY_PARAMETER",mod=_):
+              maths = (CODE.ModifyFunction#(p3,mod),f) :: maths;
+           case Property#("MODIFY_PARAMWETER_ARRAY",mod=_):
+              maths = (CODE.ModArrayFunction#(p3,mod),f) :: maths;
+           case "ALIAS_UNKNOWN"|"PURE_MATH?"|"SINGLE_UNIT"|"MULTI_UNIT_FUNCTION": "" <*QY: to be resolved later *>
+           }
+      enddo 
+     />
+
+<output  syntax="FindLoops.code" from=(CODE.Annotations#(maths)) to=annot />
+
+<output cond=(ext : "c") to=out syntax=("Cfront.code" "FindLoops.code") from=(CODE.StmtList#result)/>
+<output cond=(ext : "rose"|"C"|"cc"|"cpp") to=out syntax=("C++front.code" "FindLoops.code") from=(StmtList#result)/>
+<output cond=(ext : "F"|"f") to=out syntax=("Ffront.code" "FindLoops.code") from=(CODE.StmtListm#result)/>
+<output cond=(ext : "F90") to=out syntax=("F95front.code" "FindLoops.code") from=(CODE.StmtListm#result)/>
+<output cond=(COLLECT_CALLS!="") to=call syntax="FindLoops.code" from = (CODE.CallGraph#COLLECT_CALLS) />

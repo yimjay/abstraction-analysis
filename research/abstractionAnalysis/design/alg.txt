@@ -1,0 +1,106 @@
+Input: 
+  c : A C++ class to be analyzed
+  s : a set of semantic specifications, 
+Output: 
+  s_c \subset s: the subset of semantic specifications in s that match c 
+  f_c :  s_c -> c: a function that maps higher-level semantics of c to lower implementations 
+
+Each abstraction semantic specification is a tuple (N, V, C), where
+  N: The name of the abstraction (e.g., stack, queue, dequeue, etc)
+  V: a set of abstract variables used to represent the internal state of an abstraction 
+  C:  The set of constant values used in specification,e .g., true, false, etc.
+  D : A set of valid internal states of the abstraction, each state is specified by using a sequence of symbols in the form of (a1, a2, ... a_n), where a_i \in V \cup \{...\}. 
+  M:  The set of public interface functions (methods), which can be used to access or modify internal data of the abstraction.
+     Specifically, M is a set of transitions that modify the internal state of the abstraction. Each transition has three components: (T_n, T_src, T_res), where T_n is the name of the transition (e.g., push vs pop), T_src and T_res are the input and result of the transition and each in the form of s1 * s2 * ... s_n, where s_i \in S \cup V \cup C
+
+Example abstraction specifications:
+
+Stack: (top elem ...) or (top)
+Pop: (top elem1 elem2 ...) -> elem1 * (top elem2 ...)
+Push: elem * (top elem1 ... ) -> (top elem elem1 ...)
+Empty : {top} -> true;
+        {top elem ...} -> false
+
+Queue: (front elem1 ... back elem2) or (front back)
+Pop: (front elem ... back) -> elem * (front ... back)
+Push: (front elem1 ... back) * elem2 -> (front elem1 ... elem2 back) 
+Empty : (front back) -> true;
+        (front elem ... back) -> false
+
+Use case study:
+  1 Try specify properties applicable to the data abstraction implementations in paperhttp://www.cs.uccs.edu/~qyi/papers/ASE2019.pdf
+    Perform case study of matching these properties to the appropriate implementations in the sequential data abstractions..
+  2. Try specify non-blocking synchronization semantics via the specification lanauge and try automatically recognizing the non-blocking synchronization semantics.
+
+Algorithm:
+ MatchAbstraction (input, abs)
+  input = (N_i, V_i, M_i) : the name, member variables, and member methods of C++ class to analyze
+  abs = (N_a, V_a, C_a, D_a, M_a) : the name, data, and interface functions of abstraction specification to match against
+ return: (f : f_v : D_a->R(V_i), f_m : M_a -> C(M_i)): functions that map  V_a, and M_a to their implementations in data references (R) and instruction sequences (C)  
+
+   result = \emptyset;
+   for each (f_v, f_d) \in MatchDataSemantics(D_a, V_i, M_i) do
+     f_m = \emptyset;
+     succ = true;
+     for each m_a \in M_a do 
+       c_m = MatchFunctionSemantics(m_a, M_i, f_v, f_d);
+       if (c_m is null) then
+          succ = false; break;
+       endif;
+       f_m = f_m \union { adapt_api(m_a, c_m) };
+     enddo
+     if succ then 
+       result = result \union { (f_v, f_m) };
+     endif;
+   enddo;
+   return result;
+
+
+ MatchDataSemantics(D_a, V_i, M_i):
+   P_v = position_variables_of(D_a)
+   P_i = pointer_member_variables_of(V_i);
+   result = \emptyset;
+   for each possible matching f_v : P_v -> P_i do 
+     D_i = \emptyset;
+     for each internal state  d_a \in D_a do 
+        d_i = translate_to_implementation(d_a, f_v);
+        D_i = D_i U { d_i };  
+     endfor;
+     succ = true;
+     for each class method m_i \in M_i do
+        d_j = symbolic_evaluation(m_i, f_v);
+        if not (d_j \subseteq D_i)  then
+          succ = false; 
+          break;
+        endif
+      endfor
+      if (succ) then
+         result = result U { f_v, f_d };
+      endif
+   endfor
+   return result;
+
+*** position_variables_of(D_a):
+  For now: For all variables v in each internal state of the abstraction, if v is not followed by ..., then v is a position variable.
+
+*** 
+ 
+ MatchFunctionSemantics(m_a, methods_i, f_v, f_d)
+    m_a : a single abstraction state transitions ;
+    methods_i: public methods of C++ class
+    f_v : mapping from abstraction variables to C++ member variables;
+    f_d : mapping all possible abstraction states to corresponding C++ data representations.
+   Return: { (m_i, d_j) : m_i implments m_a, and d_j is the set of output states after invoking m_i }
+
+  result = \emptyset;
+  for each class method m_i \in methods_i do
+    d_j = symbolic_evaluation(m_i, f_d); <*note: clarify f_v or f_d here?*>
+    (d_a, d_b) = AbstractionTransition(m_a)
+    if (translate_to_implemenation(d_a, f_v) \subseteq f_d  
+      and translate_to_implemenation(d_b, f_v) \subseteq  d_j)   then
+        result = result U { (m_i, d_j) }
+    endif
+  endfor
+  return result;
+
+  

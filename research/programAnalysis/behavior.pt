@@ -1,0 +1,101 @@
+include ExpStmt.incl
+
+<parameter inputFile default="" message="input file name"/>
+<parameter inputLang default="C++front.code" message="file name for input language syntax" />
+
+<parameter outputFile default=""  message="output file name"/>
+
+<input from=(inputFile) syntax=(inputLang) to=inputCode/>
+
+<eval 
+   res = MAP(ID,_);
+   XFORM.Analyze(inputCode, res);
+   res = CODE.SymbolTable#res;
+/> 
+
+<output to=(outputFile) syntax="behavior_output.code" from=res/>
+<**************************************************************>
+<***** code templates recognized from the input language ***>
+<**************************************************************>
+<code TypeDecl pars=(type)/>
+<code TypeDef pars=(name,type)/>
+<code VarDeclStmt pars=(type, var) />
+<code TypeInfo pars=(type,name)/>
+
+<code ExpStmt pars=(exp)/>
+<code Nest pars=(ctrl,body) />
+<code If pars=(condition)/> 
+<code While pars=(condition) />
+<code For pars=(init,test,incr) />
+<code SwitchStmt pars=(var, cases)/>
+<code CaseLabel pars=(label, stmt)/>
+
+<code ClassType pars=(name, body, parents) />
+<code Constructor pars=(name,params,body)/>
+<code MemberMethod pars=(name,params,returnType,body,annot)/>
+<code Transition pars=(from, to)/>
+
+<define NUM_STATES 0/>
+<define SWITCH_VAR "__switch_var"/>
+
+<xform NEW_STATE pars=(scope, constr)>
+  GLOBAL.NUM_STATES += 1;
+  StateDecl#(scope^"_"^GLOBAL.NUM_STATES,constr,"","")
+</xform>
+
+<code Transition pars=(from,to) />
+<code FSM_info pars=(Range, states, trans, start, end) />
+<eval FSM_map= MAP(_,FSM_info);/>
+
+<xform Analyze pars=(input, symTab)  pred="">
+ Range=MAP(CODE.Var,_); states=""; trans="";
+ start=pred; 
+ for (p_stmts = input; (s0 = car p_stmts); p_stmts = cdr(p_stmts)) 
+ {
+   switch (s0) 
+   {
+   case (CODE.FunctionDecl#(name,params,_,body) |
+       CODE.MemberMethod#(name,params,_,body,_) |
+       CODE.Constructor#(name,params,body)) :
+      newTable = new_symTab(name, params); 
+      GLOBAL.FSM_map[s0] = Analyze[pred=pred](body, BuildList(newTable, symTab));
+      InsertKey(CODE.Method#(name,params), SymbolTable#newTable, symTab);
+   case CODE.TypeDecl#(CODE.ClassType#(name,body,inherit)):
+      newTable = MAP(ID,_); 
+      GLOBAL.FSM_map[s0] = Analyze[pred=pred](body, BuildList(newTable, symTab));
+      InsertKey(name, SymbolTable#newTable, symTab);
+   case CODE.TypeDef#(var,type): InsertKey(var, type, symTab); 
+
+   case CODE.VarDeclStmt: 
+       InsertVar(s0[VarDeclStmt.typeInfo], symTab); 
+       InitializeRange(s0[VarDeclStmt.typeinfo], Range);
+   case CODE.ExpStmt#(exp): 
+       Modify_range(exp, pred, Range);
+       Invalidate_pred(exp, pred);
+
+   case CODE.Nest#(If#(cond),bt) | CODE.Nest#(While#(cond), bt) 
+       | CODE.Nest#(CODE.Else#(cond),bt):
+       pred_t = Join_pred(pred, cond);
+       pred_f = Subtract_pred(pred, cond);
+       GLOBAL.FSM_map[bt] = fsm_t = Analyze[pred=pred](bt, pred_t, symtab);
+       Union_Range(fsm_t[FSM_info.Range], Range); 
+       Insert_states( (pred_t fsm_t[FSM_info.end]), states); 
+       Insert_trans( Transition#(pred_t, fsm_t[FSM_info.end]), trans); 
+   case CODE.SwitchStmt#(name, body): 
+      newTable = MAP(ID,_); newTable[SWITCH_VAR]=name;
+      fsm = Analyze[pred=pred](body, BuildList(newTable, symTab));
+      InsertKey(s0, SymbolTable#newTable, symTab);
+   case CODE.CaseLabel#(val,body):
+       name = LookupTable[deep_search=1](SWITCH_VAR, symTab);
+       if (name=="") ERROR("Unmatched match label:" s0);
+       newTable = MAP(ID,_); 
+       pred_i = Join_pred(Bop#("==",name,val), pred);
+       fsm = Analyze[pred=pred_i](body, BuildList(newTable, symTab));
+       InsertKey(s0, SymbolTable#newTable, symTab);
+   case CODE.Break: BREAK;
+  }
+ } 
+ FSM_info#(Range, states, trans, start, pred)
+</xform>
+
+

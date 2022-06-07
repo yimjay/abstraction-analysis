@@ -1,0 +1,83 @@
+include utils.incl
+
+<define IGNORE_DECL TRUE/>
+<define IGNORE_STMT FALSE />
+<<*<define BACKTRACK TRUE/>
+
+<define PARSE CODE.Program/>
+
+<define CUR_FUNCTION ""/>
+<define COLLECT_CALLS  "" />
+
+<code CallGraph pars=(content :LIST(CODE.CallRel, "\n")) > 
+@content@
+
+</code>
+
+<code CallRel pars=(from, to)> @from@ -> @to@ </code>
+
+<code Program parse=LIST(DECLARATION, "\n")/>
+
+<code IgnoreDecl pars=(content: (~("\n"|"\r")...)) 
+                     rebuild=(IGNORE_DECL? "" : content) > 
+@content@ </code>
+
+
+<code LB_Block pars=(content : CODE.InsideLB) > { @content@ } </code>
+
+<code CtrlExp pars=(content : CODE.InsideLP) > (@content@) </code>
+
+<code InsideLB parse=LIST(LB_Block | CODE.NoLRB,"") />
+<code InsideLP parse=LIST(CtrlExp | CODE.NoLRP,"") />
+
+<code NoLRB parse=(~("{"|"}"))... />
+<code NoLRP parse=(~("("|")"|";"|"{"|"}"))... />
+
+<code FunProp pars=(prop,f)>
+@FunctionDecl#(n=_,p=_,_,_)=f;
+p2 = NULL;
+foreach t=CODE.TypeInfo#(t1=_,v1=_,_) \in reverse (p) do
+  p2 = CODE.VarInfo#(t1,v1) :: p2;
+enddo
+@operator @(f=>CODE.ScopedName)@(@CODE.ParamDeclList#p2@) @prop@
+</code>
+
+<code PureFunction pars=(params)>
+{ modify {}; read{@CODE.ExpList#params@}; alias none; };
+</code>
+
+<code AliasFunction pars=(params,ret)>
+{ modify {}; read{@CODE.ExpList#params@}; alias {@CODE.AliasResult#ret@}; };
+</code>
+
+<code ModifyFunction pars=(params,mod)>
+{ modify {@ExpList#mod@}; read{@CODE.ExpList#params@}; alias none; };
+</code>
+
+<code ModArrayFunction pars=(params,mod)>
+{ modify_array {@mod@}; read{@CODE.ExpList#params@}; alias none; };
+</code>
+
+<code AliasResult pars=(p)>
+result=@(car p) ((cdr p)==NULL?"":("," AliasResult#(cdr p)))@
+</code>
+
+
+<code ParamDeclList parse=LIST(CODE.VarInfo,",")/>
+
+<code Annotations parse=LIST(CODE.FunProp, "\n") />
+
+<code VarInfo pars=(type : XFORM.UnparseType, name : ID)> 
+@UnparseType(type)@ @name@ </code>
+
+<xform UnparseType pars=(t)>
+switch (t) {
+  case CODE.PtrType#t1|CODE.ArrayType#t1: (UnparseType(t1)"*")
+  case CODE.RefType#t1: (UnparseType(t1)"&")
+  case CODE.ModifierType#(m=_,t1=_): UnparseType(t1)
+  case CODE.VoidType|CODE.IntType:  t
+  case t1=ID|CODE.Name|CODE.ScopedName: t1
+  case CODE.TypeDef#(_,t1): t1
+  default: t
+}
+</xform>

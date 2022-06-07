@@ -1,0 +1,31 @@
+<define PARSE LIST(CODE.Abstraction, "\n")/>
+<define TOKEN (("." "." ".") ("("")"))/>
+
+<code Abstraction pars=(name : ID, data : CODE.Record, methods : LIST(CODE.AbstractionMethod, "\n"))>
+@name@ : @data@ with
+{
+  @methods@
+};
+</code>
+
+<code Record pars=(variables : LIST(CODE.ZeroOrMoreData|ID,""))>
+{ @variables@ }
+</code>
+
+<code ZeroOrMoreData > elem ... </code>
+
+<code AbstractionMethod pars=(name : ID, body : LIST(CODE.MethodSpec, "\n"))>
+@name@ : @body@
+</code>
+
+<code MethodSpec pars = (thisObj : CODE.Record, inputs : CODE.RestOfInput|"",modifiedObj : CODE.Record,outputs : CODE.RestOfInput|"")> 
+@thisObj@@inputs@ -> @modifiedObj@@outputs@;
+</code>
+
+<code Object pars=(val : ID | CODE.Record)>
+@val@
+</code>
+
+<code RestOfInput pars=(val : LIST1(CODE.Object,"*"))> 
+*@val@
+</code>

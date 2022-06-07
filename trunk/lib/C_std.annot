@@ -1,0 +1,3 @@
+operator printf() { modify none; alias none; side_effect { print } };
+operator strtoi() { modify none; alias none; }
+operator exit() { modify none; alias none; side_efect:  exit; }
