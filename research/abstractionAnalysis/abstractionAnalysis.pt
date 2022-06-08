@@ -351,7 +351,8 @@ Output = list of permuted elements from given input
 ***>
 <xform PermuteMappings pars=(input)>
   res = NULL;
-  switch (LEN(input) {
+  switch (LEN(input))
+  {
     case 0 | 1:
       res = input :: res;
     case 2:
